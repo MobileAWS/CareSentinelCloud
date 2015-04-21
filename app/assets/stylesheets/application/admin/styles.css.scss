@@ -1,0 +1,194 @@
+.form-signin {
+    max-width: 400px;
+    margin: 15% auto;
+    border: 1px solid;
+}
+
+.form-signin .form-control {
+    margin-bottom: 7px;
+}
+
+.form-signin .title {
+  background: image_url("logo.png")  no-repeat center center  #62c1e4;
+  color: #ffffff;
+  font-weight: bolder;
+  margin-top: 0px;
+  height: 75px;
+}
+
+.form-signin .inner-form{
+    padding: 20px 10px;
+}
+
+
+
+.admin-navbar{
+    background: linear-gradient(to right,#62c1e4 , #4d6086) !important;
+    color: #ffffff !important;
+}
+
+.admin-navbar a{
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+
+.admin-navbar .navbar-brand{
+  background: image_url("logo-toolbar.png")  no-repeat center center rgba(0,0,0,0);
+  width: 205px;
+}
+
+.admin-navbar .navbar-toggle{
+    border: 1px #ffffff solid !important;
+}
+
+.admin-navbar .navbar-toggle .icon-bar{
+    background: #ffffff !important;
+}
+
+.admin-navbar .navbar-nav .active{
+    background-color: #4d6086;
+    border-radius: 5px;
+}
+
+
+.admin-navbar .navbar-nav a:hover{
+    background-color: #4d6086;
+}
+
+.admin-content{
+    position: relative;
+    top: 50px;
+    padding-top: 20px;
+}
+
+.admin-sidebar{
+    background: linear-gradient(to right,#62c1e4 , #4d6086) !important;
+    color: #ffffff !important;
+}
+
+.section-title{
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+.dataTables_length{
+    margin-bottom: 10px;
+}
+
+.logout-button{
+  background: image_url("logout.png")  no-repeat left center;
+  height: 50px;
+  min-width: 100px;
+  padding-left: 38px !important;
+}
+
+.entity-grid .selected td{
+  background-color: #4d6086 !important;
+  color: #ffffff !important;
+}
+
+.entity-grid .selected td a{
+  color: #ffffff !important;
+}
+
+.entity-buttons-section{
+  margin-bottom: 20px;
+}
+
+.entity-buttons-section span{
+  background-color: #4d6086;
+  width: 70px;
+  height: 29px;
+  border: outset #ffffff 1px;
+  border-radius: 7px;
+  color: white;
+  display: inline-block;
+  font-weight: bolder;
+  text-align: center;
+  line-height: 2;
+  cursor: pointer;
+}
+
+.entity-buttons-section .disabled{
+  opacity: 0.65;
+  cursor: default!important;
+}
+
+.dialog-buttons{
+  @extend .entity-buttons-section;
+  text-align: right;
+  padding: 0px 10px;
+}
+
+.modal .modal-header{
+  background: linear-gradient(to right,#62c1e4 , #4d6086);
+  font-weight: bolder;
+  color: #ffffff !important;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+
+}
+
+.details-content{
+  overflow-x: hidden;
+}
+
+.details-content .details-label{
+  font-weight: bolder;
+}
+
+/** Generic overrides for bootstrap basic styles */
+.submit-button{
+    background: #4d6086 !important;
+    color: #ffffff !important;
+}
+
+
+.dataTables_filter input[type='search'] {
+  width: 250px;
+  display: inline-block;
+  margin-right: 15px;
+  font-size: 14px;
+  font-family: sans-serif;
+  font-weight: normal;
+}
+
+.dataTables_filter span{
+  display: inline-block;
+  width: 100px;
+  margin-bottom: 5px;
+  background-color: #4d6086;
+  border: outset #ffffff 1px;
+  border-radius: 7px;
+  color: white;
+  font-weight: bolder;
+  text-align: center;
+  cursor: pointer;
+  vertical-align: middle;
+  height: 45px;
+  padding-top: 10px;
+}
+
+.delete-filter-section{
+  display: inline-block;
+  padding-left: 10px;
+  margin-left: 10px;
+  font-weight: bold;
+  float: left;
+}
+
+.delete-filter-section input[type='checkbox']{
+  display: inline-block;
+}
+
+
+@media screen and (max-width: 640px) {
+  .delete-filter-section {
+    float: none;
+    text-align: center;
+    width: 100%;
+    padding-left: 0px;
+    margin-left: 0px;
+  }
+}

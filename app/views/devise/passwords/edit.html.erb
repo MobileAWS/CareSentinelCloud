@@ -1,0 +1,21 @@
+<html>
+<head>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+</head>
+</html>
+<div class="container">
+<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <div class="form-signin text-center">
+      <div class="title"></div>
+      <div class="inner-form">
+        <span class="error-message"><%= devise_error_messages! %></span>
+        <%= f.hidden_field :reset_password_token %>
+        <%= f.password_field :password, autofocus: true, autocomplete: "off",class: "form-control", placeholder:'New Password' %>
+        <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control", placeholder:'Confirm Password' %>
+        <div class="actions">
+          <%= f.submit "Change my password", class: 'btn btn-lg btn-primary btn-block submit-button' %>
+        </div>
+      </div>
+    </div>
+<% end %>
+</div>

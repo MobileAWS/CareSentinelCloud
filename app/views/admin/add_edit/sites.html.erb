@@ -1,0 +1,10 @@
+<form class="entity-input-form" data-entity="<%= params[:entityName]%>" role="form">
+    <input type="hidden" name="skip_confirm" value="true" />
+    <% if !@targetEntity.id.nil? then %>
+            <input type="hidden" name="site_id" role="entity-id" required="true" value="<%= @targetEntity.id %>"/>
+    <% end %>
+  <div class="form-group">
+      <label for="email">Name</label>
+      <input type="text" class="form-control" id="name" name="name" required="true" value="<%= @targetEntity.name%>"/>
+  </div>
+</form>

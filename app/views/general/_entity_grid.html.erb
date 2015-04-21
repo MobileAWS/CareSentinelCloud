@@ -1,0 +1,29 @@
+<% entityName = params[:entityName]
+   entityName = entityName.camelize
+   entityClass = entityName.constantize
+   columns = entityClass.gridColumns
+   if entityClass.methods(false).include?(:gridRenderers) then
+     columnRenderers =  entityClass.gridRenderers
+   else
+     columnRenderers = {}
+   end
+%>
+<%= render "general/entity_buttons" %>
+<% if @entity_deleteable then %>
+    <div class="row delete-filter-section">
+        <input type="checkbox" id="delete-filter" name="delete-filter" value="true"/>&nbsp;<span>Show Deleted</span>
+    </div>
+<% end %>
+<div class="table-responsive">
+    <table data-entity="<%= params[:entityName] %>" class="table stripe table-bordered table-hover entity-grid" role="entity-grid" <% if @entity_searchable then %> data-searchable="true" <% end %>>
+      <thead>
+        <tr>
+            <% columns.each do |name,value| %>
+                <td data-field="<%= name %>" data-renderer="<%= columnRenderers[name]%>"> <%= value %></td>
+            <% end %>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+</div>

@@ -1,0 +1,7 @@
+<select name="role_id" id="rolesSelector" class="form-control">
+    <% roles = Role.all
+       roles.each do |type|
+    %>
+        <option value="<%= type.id %>" <%= "selected='true'" if selectedValue == type.id%>><%= type.name%></option>
+    <% end %>
+</select>

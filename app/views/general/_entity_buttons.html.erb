@@ -1,0 +1,7 @@
+<% @availableActions = [:add,:edit,:delete,:details] if @availableActions.nil? %>
+<div class="entity-buttons-section" data-entity="<%= params[:entityName] %>" data-entity-display="<%= params[:entityName].camelize%>">
+    <% if @availableActions.include? :add then %><span class="add">Add</span><% end %>
+    <% if @availableActions.include? :edit then %><span class="edit disabled selection-dependent">Edit</span><% end %>
+    <% if @availableActions.include? :delete then %><span class="delete disabled selection-dependent">Delete</span><% end %>
+    <% if @availableActions.include? :details then %><span class="details disabled selection-dependent">Details</span><% end %>
+</div>

@@ -1,0 +1,25 @@
+<html>
+<head>
+
+</head>
+<body style="width: 400px; margin: 0px; font-family: sans-serif;">
+<div style="padding-left: 20px; background: url('<%= BaseApp::Application.config.emailAssetHost + image_url('application/logo-tiny.png') %>') no-repeat 20px center; width: 100%; height: 50px; display: block !important; border-bottom: solid 1px #c07a7a; margin-bottom: 15px;"></div>
+<div style="padding-left: 20px; padding-bottom: 20px">
+  <div style='font-size: 20px; font-weight: bold'>Welcome To Application!</div>
+  <br/>
+  <br/>
+</div>
+<div style='text-align: left;width:100%;word-wrap: normal'>
+  <div style='padding-left: 20px; padding-bottom: 20px; margin: 0px; word-wrap: normal'>
+    You can confirm your account email through the button below:
+  </div>
+  <a href='<%= confirmation_url(@resource, confirmation_token: @token) %>' style='text-decoration: none; color: white;' target="_blank">
+    <div style='background-color: #432433; border: 1px solid #432433; border-radius:2px; text-align: center; padding: 10px; margin-right: 20%; margin-left:20%;'>
+      Confirm Your Account
+    </div>
+  </a><br/>
+  <br/>
+  <br/>
+</div>
+</body>
+</html>

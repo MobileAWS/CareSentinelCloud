@@ -1,0 +1,12 @@
+<%= javascript_include_tag 'application/admin/login.js' %>
+<div class="container">
+  <form class="form-signin text-center" role="form" id="signinForm" action="users/login" method="get">
+    <div class="title"></div>
+    <div class="inner-form">
+      <input name="email" type="email" class="form-control" placeholder="Email address" required autofocus>
+      <input name="password" type="password" class="form-control" placeholder="Password" required>
+      <span class="error-message hidden-element">Incorrect username and password</span>
+      <button id="signinButton" class="btn btn-lg btn-primary btn-block submit-button">Sign in</button>
+    </div>
+  </form>
+</div>
