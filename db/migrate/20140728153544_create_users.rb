@@ -15,12 +15,13 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users do |t|
       t.string :email,              null: false, default: ''
       t.string :encrypted_password, null: false, default: ''
-      t.string :firstname, null: false
-      t.string :lastname, null: false
       t.string :phone
+      t.integer :customer_id, null: false
       t.belongs_to :role
       t.belongs_to :site
       t.timestamps
     end
+
+    add_index(:users, :customer_id, unique: true)
   end
 end

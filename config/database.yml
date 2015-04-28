@@ -6,11 +6,11 @@
 #
 development:
   adapter: postgresql
-  host: localhost
+  host: lppurchase.ccasi6w4s7bm.us-east-1.rds.amazonaws.com
   database: loonmedical_dev
   pool: 5
-  username: postgres
-  password: pwd
+  username: maws
+  password: G30rg14*
 
 test:
     adapter: postgresql

@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       post 'update' => 'rest/user#update'
       get 'profile' => 'rest/user#profile'
       post 'resetPassword' => 'rest/user#resetPassword'
+      post 'generateUserId' => 'rest/user#generateUserId'
     end
   end
 

@@ -9,8 +9,7 @@ user = User.new
 user.email = 'admin@caresentinel.com'
 user.password = '@ndr0m3d@'
 user.password_confirmation = '@ndr0m3d@'
-user.firstname = 'CareSentinel'
-user.lastname = 'Admin'
+user.customer_id = 0
 user.skip_confirmation!
 user.role = adminRole;
 user.save!
