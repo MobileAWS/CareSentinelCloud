@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
   # Admin pages routes
 
+  get '/' => 'admin#login'
   get 'admin' => 'admin#login'
   get 'admin.html' => 'admin#login'
   get 'admin/home' => 'admin#home'
