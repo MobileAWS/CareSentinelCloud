@@ -1,6 +1,6 @@
 class Rest::UserController < Rest::SecureController
 
-  AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword,:nextClientCode]
+  AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword,:generateUserId]
   AuthValidation.admin_access :user => [:list]
 
   # User creation
