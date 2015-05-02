@@ -1,7 +1,7 @@
 class Rest::UserController < Rest::SecureController
 
-  AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword]
-  AuthValidation.admin_access :user => [:list,:nextClientCode]
+  AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword,:nextClientCode]
+  AuthValidation.admin_access :user => [:list]
 
   # User creation
   def register (skipValidation = false)
