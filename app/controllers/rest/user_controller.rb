@@ -1,8 +1,8 @@
 class Rest::UserController < Rest::SecureController
 
-  AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword,:generateUserId]
+  AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword]
   AuthValidation.admin_access :user => [:list]
-
+  AuthValidation.token_action :user => [:generateUserId]
   # User creation
   def register (skipValidation = false)
     return if !checkRequiredParams(:email,:password,:confirm_password,:customer_site_id,:customer_id);
