@@ -1,5 +1,6 @@
 class AuthenticationController < Rest::ServiceController
 
+  include AuthValidation
   require 'securerandom'
 
   # Uses devise to log in the user into the system. This is the only place
@@ -10,18 +11,24 @@ class AuthenticationController < Rest::ServiceController
   def new
     user = User.find_for_database_authentication(:email => params[:email])
     if user.nil? then
-      expose :message=>'User or password incorrect', :error=>true
+      expose :message=>'User or password incorrect for this site', :error=>true
       return;
     end
 
     # Invalidate any session the user ha now
-    invalidateUserSession user
+    # invalidateUserSession user
 
     # Validate the password, as you can see, if the password is wrong, the user seession is already
     # gone, this can improve security.
     if !user.valid_password?(params[:password]) then
-      expose :message=>'User or password incorrect', :error=>true
+      expose :message=>'User or password incorrect for this site', :error=>true
       return;
+    end
+
+    #Validate the user site
+    if !user.valid_site?(params[:site]) then
+      expose :message=>'User or password incorrect for this site', :error=>true
+      return
     end
 
     if params[:user_type] then
@@ -33,8 +40,11 @@ class AuthenticationController < Rest::ServiceController
 
 
     # Create a new session
-    token = generateUserSession user
-    expose :token => token, :user => user
+    site = Site.find params[:site]
+    token = generateUserSession(user, site)
+
+    setCurrentUser user
+    expose :token => token
   end
 
   def logout
@@ -52,6 +62,12 @@ class AuthenticationController < Rest::ServiceController
     expose :message=>'Done'
   end
 
+  def sites
+    sites = Site.all
+
+    expose sites
+  end
+
   def register
   end
 
@@ -65,7 +81,7 @@ class AuthenticationController < Rest::ServiceController
 
   # Generate a user session for the given user and returns a token.
   # This method would scarcely go to the db more than once, if that ever happens.
-  def generateUserSession(user)
+  def generateUserSession(user, site)
 
     begin
       token = SecureRandom.hex(20)
@@ -74,6 +90,7 @@ class AuthenticationController < Rest::ServiceController
 
     userSession = Session.new
     userSession.user = user
+    userSession.site = site
     userSession.token = token
     userSession.save
 

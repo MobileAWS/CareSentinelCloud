@@ -26,6 +26,18 @@ AppBase.doRequest = function(url,formData, method, success,failure,dataType){
         }
     }
 
+    if(typeof user != "undefined" && user.site) {
+        if (typeof formData == "string") {
+            if (formData != "") {
+                formData += "&";
+            }
+            formData += "site="+user.site
+        }
+        else{
+            formData["site"] = user.site;
+        }
+    }
+
     $.ajax(url,{
         data: formData,
         dataType: dataType,
@@ -49,7 +61,7 @@ AppBase.defaultFailure = function(){
 AppBase.showLoadingDialog = function(message) {
     message = message ? message : "Loading ..."
     if (!AppBase.loadingDialog) {
-        var tmpDialog = $('<div id="appLoadingDialog" class="modal" data-backdrop="static" role="dialog"><div class="modal-dialog"><div class="modal-content loading-dialog"><div class="modal-body "><p class="loading-message"></p><div class="loading-panel"></div></div></div></div></div></div>');
+        var tmpDialog = $('<div id="appLoadingDialog" class="modal" data-backdrop="static" role="dialog" style="z-index: 9999 !important;"><div class="modal-dialog"><div class="modal-content loading-dialog"><div class="modal-body "><p class="loading-message"></p><div class="loading-panel"></div></div></div></div></div></div>');
         $("body").append(tmpDialog);
         AppBase.loadingDialog = $("#appLoadingDialog");
     }
@@ -99,7 +111,7 @@ AppBase.hideDialog = function(dialog){
 
 AppBase.showInputDialog = function(url,options){
     if (!AppBase.inputDialog) {
-        var tmpDialog = $('<div id="appInputDialog" class="modal input-dialog" data-backdrop="static" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><div class="modal-title"></div></div><div class="modal-body"><div class="loading-overlay"><p class="loading-message">Loading</p><div class="loading-panel"></div></div><div class="container"></div><div class="input-dialog-buttons dialog-buttons row"></div><div class="input-dialog-content"></div></div></div></div></div></div>');
+        var tmpDialog = $('<div id="appInputDialog" class="modal input-dialog" data-backdrop="static" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><div class="modal-title"></div> <div id="successAlert" class="alert alert-success" style="display: none;"><a href="#" class="close" onclick="$(\'#successAlert\').hide();">&times;</a><div id="successAlertMsg"></div></div> <div id="errorAlert" class="alert alert-danger" style="display: none;"><a href="#" class="close" onclick="$(\'#errorAlert\').hide();">&times;</a><div id="errorAlertMsg"></div></div> </div><div class="modal-body"><div class="loading-overlay"><p class="loading-message">Loading</p><div class="loading-panel"></div></div><div class="container"></div><div class="input-dialog-buttons dialog-buttons row"></div><div class="input-dialog-content"></div></div></div></div></div></div>');
         $("body").append(tmpDialog);
         AppBase.inputDialog = $("#appInputDialog");
     }
@@ -154,7 +166,9 @@ AppBase.showInputDialogLoading = function(message){
     message = message ? message : "Loading";
     var overlay = AppBase.inputDialog.find(".loading-overlay");
     overlay.find(".loading-message").html(message);
-    overlay.removeClass("hidden-element")
+    overlay.removeClass("hidden-element");
+    $('#successAlert').hide();
+    $('#errorAlert').hide();
 }
 
 AppBase.showConfirmDialog = function(message,options){
@@ -170,7 +184,7 @@ AppBase.showConfirmDialog = function(message,options){
     AppBase.confirmDialog.modal('show');
 }
 
-AppBase.emailRenderer = function(data){
+AppBase.emailRenderer = function(data, type, full, meta){
     if(data == null || data == ""){
         return "";
     }
@@ -178,6 +192,33 @@ AppBase.emailRenderer = function(data){
     return "<a href='mailto:"+data+"'>"+data+"</a>";
 }
 
+AppBase.actionDialogRender = function(data, type, full, meta){
+    if(data == null || data == ""){
+        return "";
+    }
+
+    return AppBase.processActionRender(data, meta.col, true);
+}
+
+AppBase.actionRender = function(data, type, full, meta){
+    if(data == null || data == ""){
+        return "";
+    }
+
+    return AppBase.processActionRender(data, meta.col, false);
+}
+
+AppBase.processActionRender = function(data, col, isModal){
+    var template = $("#colActionHtmlTemplate"+col).val();
+    var action = $("#colAction"+col).val();
+
+    if(action && template){
+        var title = $("#colActionTitle"+col).val();
+        return template.replace('{onclick}', 'AppBase.fireAction(this, \''+action+'\', \''+title+'\', '+isModal+');').replace('{data}', data);
+    }
+
+    return data;
+}
 
 AppBase.phoneRenderer = function(data){
     if(data == null || data == ""){
@@ -221,4 +262,28 @@ AppBase.booleanRenderer = function(data){
     }
 
     return "Yes";
+}
+
+AppBase.fireAction = function(element, action, title, isModal){
+    App.selectRow(element.parentElement.parentElement);
+
+    if(action){
+        var buttonsSection = $(".entity-buttons-section");
+        try{
+            var id = App.getSelectedRowId();
+        }catch(e){
+            var id = App.getSelectedRowId();
+        }
+        action = action.replace(':id', id);
+        var url = "/"+$(".entity-grid").data("entity")+action;
+
+        if(isModal){
+            AppBase.showInputDialog(url,{
+                title: buttonsSection.data("entityDisplay")+" "+(title ? title : ''),
+                cancelOnly: true
+            });
+        }else{
+
+        }
+    }
 }

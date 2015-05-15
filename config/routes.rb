@@ -4,17 +4,27 @@ Rails.application.routes.draw do
 
   devise_for :users,
              path_names:{
-              sign_in:'login',
-              sign_out:'logout',
-              sing_up:'register'
-            },
-            controllers:{
-              sessions:'authentication',
-              confirmations: 'overrides/devise_confirmation',
-              passwords: 'overrides/devise_passwords'
-            }
+                 sign_in:'login',
+                 sign_out:'logout',
+                 sing_up:'register'
+             },
+             controllers:{
+                 sessions:'authentication',
+                 confirmations: 'overrides/devise_confirmation',
+                 passwords: 'overrides/devise_passwords'
+             }
 
   get 'users/logout' => 'authentication#logout'
+  get 'sites' => 'authentication#sites'
+
+  get '/' => 'navigate#login'
+  get '/:userrole' => 'navigate#login'
+  get '/:userrole/home' => 'navigate#home'
+  get '/:userrole/view' => 'navigate#view'
+  get '/:userrole/add_edit' => 'navigate#add_edit'
+  get '/:userrole/details' => 'navigate#details'
+
+
 
   resources :user do
     collection do
@@ -27,6 +37,8 @@ Rails.application.routes.draw do
       get 'profile' => 'rest/user#profile'
       post 'resetPassword' => 'rest/user#resetPassword'
       post 'generateUserId' => 'rest/user#generateUserId'
+      post 'addSiteUser' => 'rest/user#addSite'
+      post 'removeSiteUser' => 'rest/user#removeSite'
     end
   end
 
@@ -40,15 +52,23 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :device do
+    collection do
+      get 'list' => 'rest/device#list'
+      post 'create' => 'rest/device#create'
+      post 'update' => 'rest/device#update'
+      post 'delete' => 'rest/device#delete'
+      get 'suggestions' => 'rest/device#suggestions'
+      post 'createdevices' => 'rest/device#createDevices'
+      post 'editdevices' => 'rest/device#editDevices'
+      post 'addproperties' => 'rest/device#addProperties'
+      get  ':id/properties' => 'caregiver#device_properties'
+    end
+  end
+
   # Admin pages routes
 
-  get '/' => 'admin#login'
-  get 'admin' => 'admin#login'
-  get 'admin.html' => 'admin#login'
-  get 'admin/home' => 'admin#home'
-  get 'admin/view' => 'admin#view'
-  get 'admin/add_edit' => 'admin#add_edit'
-  get 'admin/details' => 'admin#details'
+  # Caregiver pages routes
 
   get '/fonts/:resource_name', to: redirect(lambda{|params,req| "/assets/#{params[:resource_name]}"})
 

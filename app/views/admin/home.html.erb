@@ -1,11 +1,16 @@
-<%= javascript_include_tag "application/admin/app.js" %>
+<%= javascript_include_tag "application/app" %>
+
+<% content_for :title do %>
+    Admin Application
+<% end %>
 
 <script language="JavaScript">
   var user = new Object();
   user.token = '<%= params[:token] %>';
+  user.role = '<%= @role.role_id %>';
 </script>
 
-<div class="navbar navbar-fixed-top admin-navbar" role="navigation">
+<div class="navbar navbar-fixed-top main-navbar" role="navigation">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-target="#navbarOptions" data-toggle="collapse">
@@ -27,5 +32,5 @@
       </div>
     </div>
 </div>
-<div class="container-fluid admin-content">
+<div class="container-fluid body-content">
 </div>

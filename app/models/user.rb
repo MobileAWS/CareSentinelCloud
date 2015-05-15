@@ -6,9 +6,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,:recoverable, :validatable, :confirmable
 
   belongs_to :role
-  belongs_to :site
+  has_and_belongs_to_many :sites, join_table: "site_users"
 
-  @@gridColumns = {:id => "Id",:customer_id => "Customer Id", :site_id => "Customer Site Id",:phone => "Phone",:email => "Email"}
+  has_many :device_users
+  has_many :devices, :through =>  :device_users
+
+  @@gridColumns = {:id => "Id",:customer_id => "Customer Id", :phone => "Phone",:email => "Email"}
   @@gridRenderers = {:phone => 'phoneRenderer',:email => 'emailRenderer'}
 
   def self.gridColumns
@@ -19,8 +22,11 @@ class User < ActiveRecord::Base
     @@gridRenderers
   end
 
-
   def isAdmin?
     return self.role_id == 1 #Role 1 is admin
+  end
+
+  def valid_site?(site_id)
+    return !self.sites.find_by(id: site_id).nil?
   end
 end

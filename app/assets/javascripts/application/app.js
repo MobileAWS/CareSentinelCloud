@@ -1,5 +1,4 @@
 var App = new Object();
-App.name = "admin";
 
 $(document).ready(function(){
     $("[role='entityLink']").click(App.entityLinkClick);
@@ -9,7 +8,7 @@ $(document).ready(function(){
 
 App.logout = function(event){
     event.preventDefault();
-    AppBase.callRestService($(this).attr("href"),"","GET",function(){ window.location.href = "/admin"});
+    AppBase.callRestService($(this).attr("href"),"","GET",function(){ window.location.href = "/"});
 }
 App.entityLinkClick = function(event){
     event.preventDefault();
@@ -17,7 +16,7 @@ App.entityLinkClick = function(event){
     $(this).closest(".navbar-nav").find(".active").removeClass("active");
     $(this).addClass("active");
     var entity = $(this).data("entity");
-    AppBase.getPage("/"+App.name+"/view",{
+    AppBase.getPage("/"+user.role+"/view",{
                                 entityName: entity
                             },App.loadEntityView);
 }
@@ -25,8 +24,8 @@ App.entityLinkClick = function(event){
 
 App.loadEntityView = function(data){
 
-    $(".admin-content").empty();
-    $(".admin-content").html(data);
+    $(".body-content").empty();
+    $(".body-content").html(data);
 
     var entityGrid = $(".entity-grid");
     var searchable = entityGrid.data("searchable");
@@ -60,6 +59,7 @@ App.loadEntityView = function(data){
         data.per_page = data.length;
         data.page = (data.start/data.length) + 1;
         data.token = user.token;
+        data.site = user.site;
         var delFilter = $('#delete-filter:checked');
         if(delFilter.length > 0){
             data.show_deleted = delFilter.val();
@@ -85,12 +85,9 @@ App.loadEntityView = function(data){
         "columns": columns
     });
 
+    //Tratar de anadir un evento para el td que se clickeo comparado al colNumber
     entityGrid.find("tbody").on("click","tr",function(){
-        if(!$(this).hasClass("selected")){
-            entityGrid.find(".selected").removeClass("selected");
-            $(this).addClass("selected");
-            $(".entity-buttons-section .disabled").removeClass("disabled");
-        }
+        App.selectRow(this);
     });
 
 
@@ -135,6 +132,14 @@ App.loadEntityView = function(data){
     AppBase.hideDialog(AppBase.loadingDialog);
 }
 
+App.selectRow = function(row){
+    if(!$(row).hasClass("selected")){
+        $(".entity-grid").find(".selected").removeClass("selected");
+        $(row).addClass("selected");
+        $(".entity-buttons-section .disabled").removeClass("disabled");
+    }
+}
+
 App.getSelectedRowId = function(){
     var entityGrid = $(".entity-grid");
     var selectedRow = entityGrid.find(".selected");
@@ -149,7 +154,7 @@ App.showAddEditView = function(id,title){
     data["entityName"] =  buttonsSection.data("entity");
     if(id) data["entityId"] = id;
 
-    AppBase.showInputDialog("/admin/add_edit",{
+    AppBase.showInputDialog("/"+user.role+"/add_edit",{
         data: data,
         okButton: "Save",
         title: title+" "+buttonsSection.data("entityDisplay"),
@@ -182,6 +187,7 @@ App.saveEntity = function(){
 
 App.entitySaved = function(){
     AppBase.hideDialog(AppBase.inputDialog);
+    App.reloadEntityView();
 }
 
 App.showDetailsView = function(){
@@ -194,7 +200,7 @@ App.showDetailsView = function(){
     data["entityName"] =  buttonsSection.data("entity");
     data["entityId"] = App.getSelectedRowId();
 
-    AppBase.showInputDialog("/admin/details",{
+    AppBase.showInputDialog("/"+user.role+"/details",{
         data: data,
         title: "Details for "+buttonsSection.data("entityDisplay"),
         cancelOnly: true
@@ -249,4 +255,24 @@ App.deleteFailed = function(response){
 
 App.reloadEntityView = function(){
     $("[role='entityLink'].active").click();
+}
+
+App.loadErrorMessage = function(html_msg){
+    App.hideSuccessMessage();
+    $("#errorAlertMsg").html(html_msg);
+    $("#errorAlert").show();
+}
+
+App.loadSuccessMessage = function(html_msg){
+    App.hideErrorMessage();
+    $("#successAlertMsg").html(html_msg);
+    $("#successAlert").show();
+}
+
+App.hideErrorMessage = function(){
+    $('#errorAlert').hide();
+}
+
+App.hideSuccessMessage = function(){
+    $('#successAlert').hide();
 }
