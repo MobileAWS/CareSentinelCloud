@@ -1,0 +1,2 @@
+module NavigateHelper
+end

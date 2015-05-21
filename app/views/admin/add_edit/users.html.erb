@@ -1,8 +1,11 @@
+<%= javascript_include_tag "application/user/sites" %>
+
 <form class="entity-input-form" data-entity="<%= params[:entityName]%>" role="form">
     <input type="hidden" name="skip_confirm" value="true" />
     <% if !@targetEntity.id.nil? then %>
-            <input type="hidden" name="user_id" role="entity-id" required="true" value="<%= @targetEntity.id %>"/>
+            <input type="hidden" name="user_id" id="user_id" role="entity-id" required="true" value="<%= @targetEntity.id %>"/>
     <% end %>
+   <input id="sitesUser" type="hidden" name="sitesUser">
   <div class="form-group">
       <label for="email">Email</label>
       <input type="text" class="form-control" id="email" name="email" required="true" value="<%= @targetEntity.email%>"/>
@@ -22,12 +25,36 @@
     <input type="text" class="form-control" id="phone" name="phone" required="true" value="<%= @targetEntity.phone %>"/>
   </div>
   <div class="form-group">
+    <label for="customer_id">Customer Id</label>
+    <input type="text" class="form-control" id="customer_id" name="customer_id" required="true" value="<%= @targetEntity.customer_id %>"/>
+  </div>
+  <div class="form-group">
     <label for="role">Role</label>
     <%= render "general/components/roles_combo" , :selectedValue => @targetEntity.role_id%>
   </div>
   <div class="form-group">
-    <label >Site</label>
-    <%= render "general/components/site_autocomplete", :targetValue => @targetEntity.site_id, :targetLabel => Site.getSiteName(@targetEntity.site_id) %>
+    <label>User Sites</label>
+    <div id="successAlert" class="alert alert-success" style="display: none;"><a href="#" class="close" onclick="$('#successAlert').hide();">&times;</a><div id="successAlertMsg"></div></div>
+    <div id="errorAlert" class="alert alert-danger" style="display: none;"><a href="#" class="close" onclick="$('#errorAlert').hide();">&times;</a><div id="errorAlertMsg"></div></div>
+    <div class="input-group">
+      <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/site/suggestions', :prefix_id => 'site' %>
+      <span class="input-group-btn">
+        <button class="btn btn-default" id="btnAddSite" type="button">Add Site</button>
+      </span>
+    </div>
+    <br/>
+    <table id="siteNameTable" style="min-width: 200px; text-align: center;" border="1" align="center">
+      <tr>
+        <th style="text-align: center;">Site Name</th>
+        <th style="text-align: center;">Action</th>
+      </tr>
+    <% @targetEntity.sites.each do |s|%>
+        <tr id="tr<%= s.id %>">
+         <td><%= s.name %></td>
+          <td style="text-align: center;"><a href="#" onclick="removeSite('<%= s.id %>');"><span aria-hidden="true">&times;</span></a></td>
+        </tr>
+    <% end %>
+    </table>
   </div>
 
 </form>

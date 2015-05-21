@@ -9,6 +9,7 @@ class CreateUsers < ActiveRecord::Migration
 
     create_table :roles do |t|
       t.string :name
+      t.string :role_id, null: false
       t.timestamps
     end
 
@@ -18,7 +19,14 @@ class CreateUsers < ActiveRecord::Migration
       t.string :phone
       t.integer :customer_id, null: false
       t.belongs_to :role
-      t.belongs_to :site
+      t.timestamps
+    end
+
+    create_table :site_configs do |t|
+      t.string :name, null: false
+      t.string :value, null: false
+      t.string :job_id, default: ''
+      t.belongs_to :site, null: false
       t.timestamps
     end
 

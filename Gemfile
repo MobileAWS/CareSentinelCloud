@@ -55,3 +55,5 @@ gem 'rest-client'
 gem 'rails_serve_static_assets'
 
 gem 'sprockets-rails','2.1.3'
+
+gem 'rufus-scheduler'

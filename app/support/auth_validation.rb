@@ -5,7 +5,28 @@ module AuthValidation
   @currentUser
 
   def getCurrentUser
-    return @currentUser
+    if !@currentUser.nil?
+      return @currentUser
+    else
+      return Session.find_by_token(params[:token]).user
+    end
+
+  end
+
+  def setCurrentUser(user)
+    @currentUser = user
+  end
+
+  def getCurrentRole
+    if !@currentUser.nil?
+        return @currentUser.role
+    else
+      return Session.find_by_token(params[:token]).user.role
+    end
+  end
+
+  def getCurrentSite
+    return Session.find_by_token(params[:token]).site
   end
 
   def validate_token

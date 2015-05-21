@@ -1,6 +1,8 @@
 class Site < ActiveRecord::Base
   extend DeleteableModel
 
+  has_and_belongs_to_many :users, join_table: "site_users"
+
   @@gridColumns = {:id => "Id", :name => "Name",:created_at => "Created At"}
   @@gridRenderers = {:created_at => 'dateRenderer'}
 
@@ -10,12 +12,6 @@ class Site < ActiveRecord::Base
 
   def self.gridRenderers
     @@gridRenderers
-  end
-
-  def self.getSiteName (tmpId)
-    return nil if tmpId.nil?
-    result = Site.find(tmpId);
-    return result.name;
   end
 
 end

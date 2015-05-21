@@ -1,7 +1,7 @@
 class Rest::UserController < Rest::SecureController
 
   AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword]
-  AuthValidation.admin_access :user => [:list]
+  AuthValidation.admin_access :user => [:list, :create, :update, :addSite, :removeSite]
   AuthValidation.token_action :user => [:generateUserId]
   # User creation
   def register (skipValidation = true)
@@ -14,17 +14,17 @@ class Rest::UserController < Rest::SecureController
     newUser.role_id = params[:role_id] unless params[:role_id].nil?
     newUser.customer_id = params[:customer_id]
 
-    # Find user site, by id, if it exists
-    site = Site.find_by_name params[:customer_site_id];
-    if !site then
-      site = Site.new
-      site.name = params[:customer_site_id]
-      site.save!
-    end
-
-    newUser.site_id = site.id
     newUser.skip_confirmation! if skipValidation
     newUser.save
+
+    siteIds = params[:sitesUser].split(",")
+    siteIds.each do |id|
+      site = Site.find id
+      siteUser = SiteUser.new
+      siteUser.site = site
+      siteUser.user = newUser
+      siteUser.save
+    end
     expose 'done'
   end
 
@@ -47,7 +47,6 @@ class Rest::UserController < Rest::SecureController
     tmpUser.customer_id = params[:customer_id] if (!params[:customer_id].nil?)
     tmpUser.phone = params[:phone] if (!params[:phone].nil?)
     tmpUser.role_id = params[:role_id] unless params[:role_id].nil?
-    tmpUser.site_id = params[:site_id] unless params[:site_id].nil?
     tmpUser.save!
 
     expose 'done'
@@ -61,14 +60,13 @@ class Rest::UserController < Rest::SecureController
     if !params[:search].nil?
       value = params[:search][:value].nil? ? '' :  params[:search][:value]
       value = value.downcase
-      usersSearch = User.where("customer_id = #{value.empty? ? -1 : value} OR site_id = #{value.empty? ? -1 : value} OR lower(email) like '%#{value}%'");
+      usersSearch = User.where("customer_id = #{value.empty? ? -1 : value} OR lower(email) like '%#{value}%'");
     end
     usersSearch = User.all if usersSearch.nil?
     expose paginateObject(usersSearch)
   end
 
   def delete
-
     return if !checkRequiredParams(:user_id);
 
     tmpUser = User.find(params[:user_id])
@@ -98,16 +96,48 @@ class Rest::UserController < Rest::SecureController
   def resetPassword
     return unless checkRequiredParams :email
     user = User.where('lower(email) = :email',{email: params[:email].downcase}).first
-    if user.nil?
-      error! :bad_request, :metadata => {:message => 'User not found'}
-      return
+    if !user.nil?
+      user.send_reset_password_instructions
     end
-    user.send_reset_password_instructions
     expose 'Done'
   end
 
   def generateUserId
     value = ActiveRecord::Base.connection.execute(%Q{ SELECT nextval('customers_ids_sequence'); });
     expose :customer_id => value
+  end
+
+  def addSite
+    return if !checkRequiredParams(:site_id, :user_id);
+
+    user = User.find(params[:user_id])
+    siteSearch = user.sites.find_by(id: params[:site_id])
+    if siteSearch.nil?
+      siteUser = SiteUser.new
+      siteUser.user = user
+      siteUser.site = Site.find params[:site_id]
+      siteUser.save!
+      expose 'done'
+    else
+      expose 'The site is already associated for this user'
+    end
+  end
+
+  def removeSite
+    return if !checkRequiredParams(:site_id, :user_id);
+    #The user must have one site
+    sites = SiteUser.where(user_id: params[:user_id]).count
+
+    if sites > 1
+      siteSearch = SiteUser.find_by(site_id: params[:site_id], user_id: params[:user_id])
+      if !siteSearch.nil?
+        siteSearch.destroy
+      end
+      expose 'done'
+    else
+      expose 'User must have one site'
+    end
+
+
   end
 end
