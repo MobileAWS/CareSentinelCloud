@@ -1,7 +1,7 @@
 class Rest::UserController < Rest::SecureController
 
   AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword]
-  AuthValidation.admin_access :user => [:list]
+  AuthValidation.admin_access :user => [:list, :create, :update, :addSite, :removeSite]
   AuthValidation.token_action :user => [:generateUserId]
   # User creation
   def register (skipValidation = false)
@@ -96,11 +96,9 @@ class Rest::UserController < Rest::SecureController
   def resetPassword
     return unless checkRequiredParams :email
     user = User.where('lower(email) = :email',{email: params[:email].downcase}).first
-    if user.nil?
-      error! :bad_request, :metadata => {:message => 'User not found'}
-      return
+    if !user.nil?
+      user.send_reset_password_instructions
     end
-    user.send_reset_password_instructions
     expose 'Done'
   end
 

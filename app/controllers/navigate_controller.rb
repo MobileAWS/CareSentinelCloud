@@ -24,6 +24,7 @@ class NavigateController < ApplicationController
   end
 
   def view
+    @site = getCurrentSite
     render getRoleId+"/main/#{params[:entityName].pluralize}", :layout => false
   end
 

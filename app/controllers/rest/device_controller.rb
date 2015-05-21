@@ -111,4 +111,13 @@ class Rest::DeviceController < Rest::ServiceController
     expose 'done'
   end
 
+  def change_status
+    deviceUser = DeviceUser.find_by(user_id: getCurrentUser.id, device_id: params[:id])
+    # device = getCurrentUser.devices.find_by().select(:enable)
+    status = deviceUser.enable
+    deviceUser.enable = !status
+    deviceUser.save!
+    expose 'done'
+  end
+
 end

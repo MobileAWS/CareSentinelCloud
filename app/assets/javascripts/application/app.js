@@ -10,6 +10,7 @@ App.logout = function(event){
     event.preventDefault();
     AppBase.callRestService($(this).attr("href"),"","GET",function(){ window.location.href = "/"});
 }
+
 App.entityLinkClick = function(event){
     event.preventDefault();
     AppBase.showLoadingDialog();
@@ -275,4 +276,38 @@ App.hideErrorMessage = function(){
 
 App.hideSuccessMessage = function(){
     $('#successAlert').hide();
+}
+
+App.reloadTable = function(){
+    $(".entity-grid").dataTable().api().ajax.reload();
+}
+
+App.fireAction = function(element, action, title, isModal){
+    App.selectRow(element.parentElement.parentElement);
+
+    if(action){
+        var buttonsSection = $(".entity-buttons-section");
+        try{
+            var id = App.getSelectedRowId();
+        }catch(e){
+            var id = App.getSelectedRowId();
+        }
+        action = action.replace(':id', id);
+        var url = "/"+$(".entity-grid").data("entity")+action;
+
+        if(isModal){
+            AppBase.showInputDialog(url,{
+                title: buttonsSection.data("entityDisplay")+" "+(title ? title : ''),
+                cancelOnly: true
+            });
+        }else{
+            AppBase.doRequest(url, null, "post", App.reloadTable, null, 'json');
+        }
+    }
+}
+
+App.showModalMessage = function(title, message){
+    $("#modalMessageText").text(message);
+    $("#modalMessageTitle").text(title);
+    $("#modalMessage").modal('show');
 }

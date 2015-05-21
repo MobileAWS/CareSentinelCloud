@@ -44,7 +44,7 @@ class AuthenticationController < Rest::ServiceController
     token = generateUserSession(user, site)
 
     setCurrentUser user
-    expose :token => token
+    expose :token => token, :role => getCurrentRole.role_id
   end
 
   def logout

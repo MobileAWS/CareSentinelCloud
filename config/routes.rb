@@ -62,7 +62,15 @@ Rails.application.routes.draw do
       post 'createdevices' => 'rest/device#createDevices'
       post 'editdevices' => 'rest/device#editDevices'
       post 'addproperties' => 'rest/device#addProperties'
+      post  ':id/changestatus' => 'rest/device#change_status'
       get  ':id/properties' => 'caregiver#device_properties'
+      get 'download' => 'caregiver#download_devices'
+    end
+  end
+
+  resources :site_config do
+    collection do
+      post 'purge_days' => 'rest/site_config#purge_days'
     end
   end
 

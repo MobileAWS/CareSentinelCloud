@@ -34,20 +34,24 @@
   </div>
   <div class="form-group">
     <label>User Sites</label>
+    <div id="successAlert" class="alert alert-success" style="display: none;"><a href="#" class="close" onclick="$('#successAlert').hide();">&times;</a><div id="successAlertMsg"></div></div>
+    <div id="errorAlert" class="alert alert-danger" style="display: none;"><a href="#" class="close" onclick="$('#errorAlert').hide();">&times;</a><div id="errorAlertMsg"></div></div>
     <div class="input-group">
       <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/site/suggestions', :prefix_id => 'site' %>
       <span class="input-group-btn">
         <button class="btn btn-default" id="btnAddSite" type="button">Add Site</button>
       </span>
     </div>
-    <table id="siteNameTable">
+    <br/>
+    <table id="siteNameTable" style="min-width: 200px; text-align: center;" border="1" align="center">
       <tr>
-        <th>Site Name</th>
+        <th style="text-align: center;">Site Name</th>
+        <th style="text-align: center;">Action</th>
       </tr>
     <% @targetEntity.sites.each do |s|%>
         <tr id="tr<%= s.id %>">
          <td><%= s.name %></td>
-          <td><a href="#" onclick="removeSite('<%= s.id %>');"><span aria-hidden="true">&times;</span></a></td>
+          <td style="text-align: center;"><a href="#" onclick="removeSite('<%= s.id %>');"><span aria-hidden="true">&times;</span></a></td>
         </tr>
     <% end %>
     </table>

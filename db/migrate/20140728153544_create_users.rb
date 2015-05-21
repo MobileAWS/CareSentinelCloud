@@ -22,6 +22,14 @@ class CreateUsers < ActiveRecord::Migration
       t.timestamps
     end
 
+    create_table :site_configs do |t|
+      t.string :name, null: false
+      t.string :value, null: false
+      t.string :job_id, default: ''
+      t.belongs_to :site, null: false
+      t.timestamps
+    end
+
     add_index(:users, :customer_id, unique: true)
   end
 end

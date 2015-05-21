@@ -111,7 +111,7 @@ AppBase.hideDialog = function(dialog){
 
 AppBase.showInputDialog = function(url,options){
     if (!AppBase.inputDialog) {
-        var tmpDialog = $('<div id="appInputDialog" class="modal input-dialog" data-backdrop="static" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><div class="modal-title"></div> <div id="successAlert" class="alert alert-success" style="display: none;"><a href="#" class="close" onclick="$(\'#successAlert\').hide();">&times;</a><div id="successAlertMsg"></div></div> <div id="errorAlert" class="alert alert-danger" style="display: none;"><a href="#" class="close" onclick="$(\'#errorAlert\').hide();">&times;</a><div id="errorAlertMsg"></div></div> </div><div class="modal-body"><div class="loading-overlay"><p class="loading-message">Loading</p><div class="loading-panel"></div></div><div class="container"></div><div class="input-dialog-buttons dialog-buttons row"></div><div class="input-dialog-content"></div></div></div></div></div></div>');
+        var tmpDialog = $('<div id="appInputDialog" class="modal input-dialog" data-backdrop="static" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><div class="modal-title"></div> </div><div class="modal-body"><div class="loading-overlay"><p class="loading-message">Loading</p><div class="loading-panel"></div></div><div class="container"></div><div class="input-dialog-buttons dialog-buttons row"></div><div class="input-dialog-content"></div></div></div></div></div></div>');
         $("body").append(tmpDialog);
         AppBase.inputDialog = $("#appInputDialog");
     }
@@ -201,7 +201,7 @@ AppBase.actionDialogRender = function(data, type, full, meta){
 }
 
 AppBase.actionRender = function(data, type, full, meta){
-    if(data == null || data == ""){
+    if((data == null || data == "") && data !== false){
         return "";
     }
 
@@ -214,7 +214,13 @@ AppBase.processActionRender = function(data, col, isModal){
 
     if(action && template){
         var title = $("#colActionTitle"+col).val();
-        return template.replace('{onclick}', 'AppBase.fireAction(this, \''+action+'\', \''+title+'\', '+isModal+');').replace('{data}', data);
+        var elementTemplate = template.replace('{onclick}', 'App.fireAction(this, \''+action+'\', \''+title+'\', '+isModal+');');
+        if($(elementTemplate).prop("type") == 'checkbox'){
+            elementTemplate = elementTemplate.replace('{data}', (data ? 'checked' : ''))
+        }else{
+            elementTemplate = elementTemplate.replace('{data}', data);
+        }
+        return elementTemplate;
     }
 
     return data;
@@ -262,28 +268,4 @@ AppBase.booleanRenderer = function(data){
     }
 
     return "Yes";
-}
-
-AppBase.fireAction = function(element, action, title, isModal){
-    App.selectRow(element.parentElement.parentElement);
-
-    if(action){
-        var buttonsSection = $(".entity-buttons-section");
-        try{
-            var id = App.getSelectedRowId();
-        }catch(e){
-            var id = App.getSelectedRowId();
-        }
-        action = action.replace(':id', id);
-        var url = "/"+$(".entity-grid").data("entity")+action;
-
-        if(isModal){
-            AppBase.showInputDialog(url,{
-                title: buttonsSection.data("entityDisplay")+" "+(title ? title : ''),
-                cancelOnly: true
-            });
-        }else{
-
-        }
-    }
 }

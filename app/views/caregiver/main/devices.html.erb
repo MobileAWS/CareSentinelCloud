@@ -1,3 +1,24 @@
-<span class="section-title">Devices Caregiver</span><br/><br/>
-<% @entity_searchable = true; %>
-<%= render 'general/entity_grid' %>
+<div role="tabpanel">
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#activemonitors" aria-controls="activemonitors" role="tab" data-toggle="tab">Active Monitors</a></li>
+    <li role="presentation"><a href="#reporting" aria-controls="reporting" role="tab" data-toggle="tab">Reporting</a></li>
+    <li role="presentation"><a href="#download" aria-controls="download" role="tab" data-toggle="tab">Download</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="activemonitors">
+      <br/><span class="section-title">Devices Caregiver</span><br/><br/>
+      <% @entity_searchable = true; %>
+      <%= render 'general/entity_grid' %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="reporting">Reporting</div>
+    <div role="tabpanel" class="tab-pane" id="download">
+      <br/><span class="section-title">Download Devices</span><br/><br/>
+      <%= link_to "Download Devices Info",{ controller: "caregiver", action: "download_devices", token: params[:token], format: "csv"}, class: "btn btn-primary" %>
+    </div>
+  </div>
+
+</div>

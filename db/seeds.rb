@@ -71,3 +71,15 @@ siteUser = SiteUser.new
 siteUser.site = site
 siteUser.user = user
 siteUser.save!
+
+config = SiteConfig.new
+config.name = 'purge_days'
+config.value = '45'
+config.site = site
+config.save!
+
+config = SiteConfig.new
+config.name = 'purge_days'
+config.value = '45'
+config.site = siteTwo
+config.save!

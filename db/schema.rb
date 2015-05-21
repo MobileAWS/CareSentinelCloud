@@ -61,6 +61,15 @@ ActiveRecord::Schema.define(version: 20150505164536) do
     t.datetime "updated_at"
   end
 
+  create_table "site_configs", force: true do |t|
+    t.string   "name",                    null: false
+    t.string   "value",                   null: false
+    t.string   "job_id",     default: ""
+    t.integer  "site_id",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "site_users", force: true do |t|
     t.integer "site_id"
     t.integer "user_id"

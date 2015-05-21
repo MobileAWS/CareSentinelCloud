@@ -47,7 +47,7 @@ function removeSite(site_id){
 function onSiteAdded(data){
     AppBase.hideDialog(AppBase.loadingDialog);
     if(data && data.response && data.response == 'done'){
-        $("#siteNameTable tr:last").after('<tr id="tr'+$("#site_id").val()+'"><td>'+$("#siteSelect").val()+'</td><td><a href="#" onclick="removeSite(\''+$("#site_id").val()+'\');"><span aria-hidden="true">&times;</span></a></td></tr>');
+        $("#siteNameTable tr:last").after('<tr id="tr'+$("#site_id").val()+'"><td>'+$("#siteSelect").val()+'</td><td style="text-align: center;"><a href="#" onclick="removeSite(\''+$("#site_id").val()+'\');"><span aria-hidden="true">&times;</span></a></td></tr>');
         $("#site_id").val('');
         $("#siteSelect").val('');
         App.loadSuccessMessage('Site associated successfully');
