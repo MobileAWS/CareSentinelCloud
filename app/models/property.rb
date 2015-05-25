@@ -1,5 +1,5 @@
 class Property < ActiveRecord::Base
-  has_many :device_properties
+  has_many :device_properties, :dependent => :delete_all
   has_many :devices, :through => :device_properties
 
   def self.to_csv

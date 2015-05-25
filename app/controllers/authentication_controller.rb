@@ -26,7 +26,7 @@ class AuthenticationController < Rest::ServiceController
     end
 
     #Validate the user site
-    if !user.valid_site?(params[:site]) then
+    if !user.isAdmin? && !user.valid_site?(params[:site]) then
       expose :message=>'User or password incorrect for this site', :error=>true
       return
     end
@@ -38,9 +38,8 @@ class AuthenticationController < Rest::ServiceController
       end
     end
 
-
     # Create a new session
-    site = Site.find params[:site]
+    site = Site.find_by(id: params[:site])
     token = generateUserSession(user, site)
 
     setCurrentUser user

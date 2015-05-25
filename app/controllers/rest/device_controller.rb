@@ -56,6 +56,13 @@ class Rest::DeviceController < Rest::ServiceController
     name = params[:query];
     search = Device.select('id as data','name as value').where("lower(devices.name) like '%#{name.downcase}%' AND devices.site_id = #{getCurrentSite.id}");
     expose :suggestions => search
+    end
+
+  def properties_suggestions
+    return if !checkRequiredParams(:query);
+    name = params[:query];
+    search = getCurrentUser.devices.joins(:device_properties).joins(:properties).where("(lower(devices.name) like '%#{name.downcase}%' OR lower(properties.key) like '%#{name.downcase}%') AND devices.site_id = #{getCurrentSite.id} ").select("DISTINCT(devices.id||','||properties.id) as data","devices.name||' - '||properties.key as value")
+    expose :suggestions => search
   end
 
   def addProperties
@@ -66,6 +73,7 @@ class Rest::DeviceController < Rest::ServiceController
       key = property[:key].downcase
       propertySearch = Property.find_by_key key
 
+      #Is new?
       if(propertySearch.nil?)
         propertySearch = Property.new
         propertySearch.key = key
@@ -77,11 +85,7 @@ class Rest::DeviceController < Rest::ServiceController
       propertyDevice = propertySearch.device_properties.find_by(property_id: propertySearch.id,device_id: device.id)
       value = property[:value]
 
-      if(propertyDevice.nil?)
-        propertySearch.save! && propertySearch.device_properties.create(device: device, value: value)
-      else
-        propertySearch.save! && propertyDevice.update_attribute(:value, value)
-      end
+      propertySearch.save! && propertySearch.device_properties.create(device: device, value: value)
 
     end
 
@@ -113,11 +117,100 @@ class Rest::DeviceController < Rest::ServiceController
 
   def change_status
     deviceUser = DeviceUser.find_by(user_id: getCurrentUser.id, device_id: params[:id])
-    # device = getCurrentUser.devices.find_by().select(:enable)
     status = deviceUser.enable
     deviceUser.enable = !status
     deviceUser.save!
     expose 'done'
+  end
+
+  def properties
+    return if !checkRequiredParams(:id);
+
+    propertiesDevice = DeviceProperty.joins(:property).where(device_id: params[:id]).order("device_properties.property_id ASC").order("device_properties.created_at ASC").select(:property_id, :value, :key)
+
+    expose propertiesDevice
+  end
+
+  def properties_report
+    return if !checkRequiredParams(:device_id, :property_id);
+
+    propertiesDevice = DeviceProperty.joins(:property).where(device_id: params[:device_id], property_id: params[:property_id]).order("device_properties.created_at ASC").select(:property_id, :value, :key, "device_properties.created_at as created_at")
+
+    dataResponse = {}
+    labels = Array.new
+    propertyValues = Array.new
+    datasets = Array.new
+
+    propertiesDevice.each_with_index do |p, index|
+      label = p.created_at.strftime("%Y-%m-%d")
+
+      propertyValues << p.value
+      labels << label
+
+      if propertiesDevice.size - 1 == index && !propertyValues.empty?
+        datasets << chart_data(propertyValues, p.key)
+      end
+    end
+
+    dataResponse["datasets"] = datasets
+    dataResponse["labels"] = labels
+    expose dataResponse
+  end
+
+  def properties_report_old
+    return if !checkRequiredParams(:id);
+
+    propertiesDevice = DeviceProperty.joins(:property).where(device_id: params[:id]).order("device_properties.property_id ASC").order("device_properties.created_at ASC").select(:property_id, :value, :key, "device_properties.created_at as created_at")
+
+    id = -1
+    dataResponse = {}
+    labels = Array.new
+    propertyValues = Array.new
+    datasets = Array.new
+
+    propertiesDevice.each_with_index do |p, index|
+      id = id == -1 ? p.property_id : id
+      label = p.created_at.strftime("%Y-%m-%d")
+      if p.property_id == id
+        propertyValues << p.value
+        # if !labels.include?(label)
+          labels << label
+        # end
+      else
+        if !propertyValues.empty?
+          datasets << chart_data(propertyValues, p.key)
+        end
+
+        id = p.property_id
+        propertyValues = Array.new
+        propertyValues << p.value
+        # if !labels.include?(label)
+          labels << label
+        # end
+      end
+
+      if propertiesDevice.size - 1 == index && !propertyValues.empty?
+        datasets << chart_data(propertyValues, p.key)
+      end
+    end
+
+    dataResponse["datasets"] = datasets
+    dataResponse["labels"] = labels.sort
+    expose dataResponse
+  end
+
+  def chart_data(propertyValues, label)
+    propertyData = {}
+    primaryColor = Random.rand(0...220).to_s
+    propertyData["fillColor"] = "rgba(#{primaryColor},220,220,0.2)"
+    propertyData["strokeColor"] = "rgba(#{primaryColor},0,0,1)"
+    propertyData["pointColor"] = "rgba(#{primaryColor},0,0,1)"
+    propertyData["pointStrokeColor"] = "rgba(#{primaryColor},0,0,1)"
+    propertyData["pointHighlightFill"] = "rgba(#{primaryColor},0,0,1)"
+    propertyData["pointHighlightStroke"] = "rgba(#{primaryColor},0,0,1)"
+    propertyData["data"] = propertyValues
+    propertyData["label"] = label
+    return propertyData
   end
 
 end

@@ -3,7 +3,7 @@ class Device < ActiveRecord::Base
   has_many :device_users
   has_many :user, :through =>  :device_users
 
-  has_many :device_properties
+  has_many :device_properties, :dependent => :delete_all
   has_many :properties, :through => :device_properties
   belongs_to :site
 

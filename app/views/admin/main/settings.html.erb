@@ -1,5 +1,5 @@
 <script language="JavaScript">
-    <% config = SiteConfig.find_by(name: 'purge_days', site_id: @site.id) %>
+    <% config = SiteConfig.find_by(name: 'purge_days') %>
     var configValue = '<%= config.value %>';
 </script>
 

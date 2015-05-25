@@ -59,10 +59,13 @@ Rails.application.routes.draw do
       post 'update' => 'rest/device#update'
       post 'delete' => 'rest/device#delete'
       get 'suggestions' => 'rest/device#suggestions'
+      get 'properties_suggestions' => 'rest/device#properties_suggestions'
       post 'createdevices' => 'rest/device#createDevices'
       post 'editdevices' => 'rest/device#editDevices'
       post 'addproperties' => 'rest/device#addProperties'
       post  ':id/changestatus' => 'rest/device#change_status'
+      post ':id/properties' => 'rest/device#properties'
+      post ':device_id/properties_report/:property_id' => 'rest/device#properties_report'
       get  ':id/properties' => 'caregiver#device_properties'
       get 'download' => 'caregiver#download_devices'
     end

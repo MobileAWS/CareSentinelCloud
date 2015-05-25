@@ -17,12 +17,12 @@ ActiveRecord::Schema.define(version: 20150505164536) do
   enable_extension "plpgsql"
 
   create_table "device_properties", force: true do |t|
-    t.integer "device_id"
-    t.integer "property_id"
-    t.string  "value",       null: false
+    t.integer  "device_id"
+    t.integer  "property_id"
+    t.string   "value",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
-
-  add_index "device_properties", ["device_id", "property_id"], name: "index_device_properties_on_device_id_and_property_id", unique: true, using: :btree
 
   create_table "device_users", force: true do |t|
     t.integer "device_id"

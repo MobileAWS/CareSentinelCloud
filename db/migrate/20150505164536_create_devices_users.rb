@@ -15,10 +15,10 @@ class CreateDevicesUsers < ActiveRecord::Migration
       t.belongs_to :device
       t.belongs_to :property
       t.string :value, null: false
+      t.timestamps
     end
 
     add_index :device_users, [:device_id, :user_id], :unique => true
-    add_index :device_properties, [:device_id, :property_id], :unique => true
     add_index :site_users, [:site_id, :user_id], :unique => true
   end
 end

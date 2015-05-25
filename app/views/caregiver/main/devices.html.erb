@@ -1,3 +1,5 @@
+<%= javascript_include_tag "application/device/report" %>
+
 <div role="tabpanel">
 
   <!-- Nav tabs -->
@@ -14,7 +16,16 @@
       <% @entity_searchable = true; %>
       <%= render 'general/entity_grid' %>
     </div>
-    <div role="tabpanel" class="tab-pane" id="reporting">Reporting</div>
+    <div role="tabpanel" class="tab-pane" id="reporting">
+      <br/><label>Device property Name</label>
+      <div class="input-group col-lg-4">
+        <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/device/properties_suggestions', :prefix_id => 'property_device' %>
+        <span class="input-group-btn">
+            <button class="btn btn-default" id="btnReport" type="button">Report</button>
+        </span>
+      </div>
+      <%= render 'general/chart' %>
+    </div>
     <div role="tabpanel" class="tab-pane" id="download">
       <br/><span class="section-title">Download Devices</span><br/><br/>
       <%= link_to "Download Devices Info",{ controller: "caregiver", action: "download_devices", token: params[:token], format: "csv"}, class: "btn btn-primary" %>
