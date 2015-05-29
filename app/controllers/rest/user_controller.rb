@@ -5,6 +5,17 @@ class Rest::UserController < Rest::SecureController
   # User creation
   def register (skipValidation = false)
     return if !checkRequiredParams(:email,:password,:confirm_password,:sitesUser, :customersUser);
+
+    if params[:sitesUser].empty?
+      expose :message=>'Site must be provided', :error=>true
+      return
+    end
+
+    if params[:customersUser].empty?
+      expose :message=>'Customer ID must be provided', :error=>true
+      return
+    end
+
     newUser = User.new
     newUser.email = params[:email]
     newUser.password = params[:password]

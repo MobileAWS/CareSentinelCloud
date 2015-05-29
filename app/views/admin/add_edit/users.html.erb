@@ -4,9 +4,12 @@
     <input type="hidden" name="skip_confirm" value="true" />
     <% if !@targetEntity.id.nil? then %>
             <input type="hidden" name="user_id" id="user_id" role="entity-id" required="true" value="<%= @targetEntity.id %>"/>
+      <input id="sitesUser" type="hidden" for="Site" name="sitesUser">
+      <input id="customersUser" for="Customer ID" type="hidden" name="customersUser">
+  <% else %>
+      <input id="sitesUser" type="hidden" for="Site" name="sitesUser" required>
+      <input id="customersUser" type="hidden" for="Customer ID" name="customersUser" required>
     <% end %>
-   <input id="sitesUser" type="hidden" name="sitesUser">
-   <input id="customersUser" type="hidden" name="customersUser">
   <div class="form-group">
       <label for="email">Email</label>
       <input type="text" class="form-control" id="email" name="email" required="true" value="<%= @targetEntity.email%>"/>

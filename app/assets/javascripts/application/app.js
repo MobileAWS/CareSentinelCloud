@@ -164,7 +164,7 @@ App.showAddEditView = function(id,title){
 }
 
 App.saveEntity = function(){
-    if(!AppBase.inputDialog) return;
+    if(!AppBase.inputDialog || App.checkRequiredHidden()) return;
     var form = AppBase.inputDialog.find(".entity-input-form");
     if(!form[0].checkValidity()){
         var hiddenSubmit = form.find(".hidden-submit");
@@ -310,4 +310,16 @@ App.showModalMessage = function(title, message){
     $("#modalMessageText").text(message);
     $("#modalMessageTitle").text(title);
     $("#modalMessage").modal('show');
+}
+
+App.checkRequiredHidden = function(){
+    var requiredError = false;
+    $("input[type=hidden]").each(function(index, element){
+        if($(this).attr('required') && !$(this).val()){
+            App.loadErrorMessage($(this).attr('for')+' must be provided');
+            requiredError = true;
+        }
+    });
+
+    return requiredError;
 }
