@@ -20,6 +20,7 @@ class NavigateController < ApplicationController
   def home
      @site = getCurrentSite
      @role = getCurrentRole
+     @customer = getCurrentCustomer
      render getRoleId+'/home'
   end
 
@@ -29,6 +30,7 @@ class NavigateController < ApplicationController
   end
 
   def add_edit
+    @customer = getCurrentCustomer
     entity_from_parameters
     render getRoleId+"/add_edit/#{params[:entityName].pluralize}", :layout => false
   end

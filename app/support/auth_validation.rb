@@ -29,6 +29,10 @@ module AuthValidation
     return Session.find_by_token(params[:token]).site
   end
 
+  def getCurrentCustomer
+    return Session.find_by_token(params[:token]).customer
+  end
+
   def validate_token
 
     controllerSymbol = controller_name.to_sym

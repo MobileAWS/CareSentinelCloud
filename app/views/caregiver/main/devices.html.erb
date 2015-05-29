@@ -17,14 +17,7 @@
       <%= render 'general/entity_grid' %>
     </div>
     <div role="tabpanel" class="tab-pane" id="reporting">
-      <br/><label>Device property Name</label>
-      <div class="input-group col-lg-4">
-        <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/device/properties_suggestions', :prefix_id => 'property_device' %>
-        <span class="input-group-btn">
-            <button class="btn btn-default" id="btnReport" type="button">Report</button>
-        </span>
-      </div>
-      <%= render 'general/chart' %>
+      <br/><%= render 'caregiver/device/device_reports' %>
     </div>
     <div role="tabpanel" class="tab-pane" id="download">
       <br/><span class="section-title">Download Devices</span><br/><br/>

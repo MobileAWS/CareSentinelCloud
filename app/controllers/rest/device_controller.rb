@@ -3,7 +3,7 @@ class Rest::DeviceController < Rest::ServiceController
   include AuthValidation
 
   def list
-    devicesSearch = getCurrentUser.devices.select(:id, :name, :site_id, :enable).where(site_id: getCurrentSite.id)
+    devicesSearch = DeviceMapping.joins(:device).select("devices.id", :name,:hw_id, :site_id, :enable).where(site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id)
     if !params[:search].nil? && !devicesSearch.nil?
       value = params[:search][:value].nil? ? '' :  params[:search][:value]
       value = value.downcase
@@ -21,53 +21,66 @@ class Rest::DeviceController < Rest::ServiceController
     hash = params[:devices]
     token = params[:token]
     site = params[:site]
-    hash.each { |d| self.registerDevice(d.name, token, site) }
+    customer = params[:customer]
+    hash.each { |d| self.registerDevice(d.name, d.hw_id, token, customer, site) }
   end
 
   def editDevices
     hash = params[:devices]
-    hash.each { |d| self.editDevice(d.id, d.name) }
+    hash.each { |d| self.editDevice(d.id, d.name, d.hw_id) }
   end
 
   def create
-    return if !checkRequiredParams(:deviceSelect);
-    self.registerDevice(params[:deviceSelect], params[:token], params[:site])
+    return if !checkRequiredParams(:deviceSelect, :hw_id);
+    self.registerDevice(params[:deviceSelect], params[:hw_id], params[:token], params[:customer_id], params[:site])
   end
 
   def update
-    return if !checkRequiredParams(:device_id, :name);
-    self.editDevice(params[:device_id], params[:name])
+    return if !checkRequiredParams(:device_id, :name, :hw_id);
+    self.editDevice(params[:device_id], params[:name], params[:hw_id])
   end
 
   def delete
     return if !checkRequiredParams(:device_id);
 
-    temp = Device.find(params[:device_id])
-    if(temp.nil?)
+    device = Device.find(params[:device_id])
+    if(device.nil?)
       error! :invalid_resource, :metadata => {:message => 'Device not found'}
     end
 
-    temp.delete
+    deviceMapping = DeviceMapping.where(device_id: params[:device_id])
+
+    device.delete && deviceMapping.destroy_all
     expose 'done'
   end
 
   def suggestions
     return if !checkRequiredParams(:query);
     name = params[:query];
-    search = Device.select('id as data','name as value').where("lower(devices.name) like '%#{name.downcase}%' AND devices.site_id = #{getCurrentSite.id}");
+    search = Device.select('id as data','name as value').where("lower(devices.name) like '%#{name.downcase}%'");
     expose :suggestions => search
-    end
+  end
 
   def properties_suggestions
     return if !checkRequiredParams(:query);
     name = params[:query];
-    search = getCurrentUser.devices.joins(:device_properties).joins(:properties).where("(lower(devices.name) like '%#{name.downcase}%' OR lower(properties.key) like '%#{name.downcase}%') AND devices.site_id = #{getCurrentSite.id} ").select("DISTINCT(devices.id||','||properties.id) as data","devices.name||' - '||properties.key as value")
+    search = DeviceProperty.joins(:property).joins(device_mapping: :device).where(device_mappings: {site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}).where("(lower(devices.name) like '%#{name.downcase}%' OR lower(properties.key) like '%#{name.downcase}%')").select("DISTINCT(devices.id||','||properties.id) as data","devices.name||' - '||properties.key as value")
     expose :suggestions => search
   end
 
   def addProperties
+    return if !checkRequiredParams(:properties, :device, :token);
     properties = params[:properties]
     device = params[:device]
+
+    session = Session.find_by_token params[:token]
+
+    #Must exists
+    deviceMapping = DeviceMapping.find_by(device_id: device[:id], user_id: session.user_id, site_id: session.site_id,customer_id: session.customer_id)
+
+    if deviceMapping.nil?
+      error! :not_acceptable, :metadata => {:message => 'Device Mapping no found'}
+    end
 
     properties.each do |property|
       key = property[:key].downcase
@@ -78,45 +91,57 @@ class Rest::DeviceController < Rest::ServiceController
         propertySearch = Property.new
         propertySearch.key = key
         propertySearch.metric = property[:metric]
+        propertySearch.save!
       end
 
       device = Device.find device[:id]
 
-      propertyDevice = propertySearch.device_properties.find_by(property_id: propertySearch.id,device_id: device.id)
-      value = property[:value]
-
-      propertySearch.save! && propertySearch.device_properties.create(device: device, value: value)
-
+      deviceProperty = DeviceProperty.new
+      deviceProperty.device_mapping = deviceMapping
+      deviceProperty.property = propertySearch
+      deviceProperty.value = property[:value]
+      deviceProperty.save!
     end
 
     expose 'done'
   end
 
-  def registerDevice(name, token, site)
-    newDevice = Device.new
+  def registerDevice(name, hw_id, token, customer_id, site_id)
+    ActiveRecord::Base.transaction do
+      session = Session.find_by_token token
+      customer = Customer.find customer_id
+      site = Site.find site_id
 
-    site = Site.find site
-    userSession = Session.find_by_token token
-    newDevice.user << userSession.user
+      newDevice = Device.new
+      newDevice.name = name
+      newDevice.hw_id = hw_id
 
-    newDevice.name = name
-    newDevice.site = site
-    newDevice.save!
-    expose 'done'
+
+      deviceMapping = DeviceMapping.new
+      deviceMapping.user = session.user
+      deviceMapping.device = newDevice
+      deviceMapping.customer = customer
+      deviceMapping.site = site
+      deviceMapping.save!
+
+      newDevice.save!
+      expose 'done'
+    end
   end
 
-  def editDevice(id, name)
-    temp = Device.find(id)
-    if(temp.nil?)
+  def editDevice(id, name, hw_id)
+    device = Device.find(id)
+    if(device.nil?)
       error! :invalid_resource, :metadata => {:message => 'Device not found'}
     end
-    temp.name = name
-    temp.save!
+    device.name = name
+    device.hw_id = hw_id
+    device.save!
     expose 'done'
   end
 
   def change_status
-    deviceUser = DeviceUser.find_by(user_id: getCurrentUser.id, device_id: params[:id])
+    deviceUser = DeviceMapping.find_by(device_id: params[:id], user_id: getCurrentUser.id, site_id: getCurrentSite.id,customer_id: getCurrentCustomer.id)
     status = deviceUser.enable
     deviceUser.enable = !status
     deviceUser.save!
@@ -131,10 +156,31 @@ class Rest::DeviceController < Rest::ServiceController
     expose propertiesDevice
   end
 
+  def average_report
+    return if !checkRequiredParams(:device_id);
+
+    propertiesAverage = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {device_id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}).select(:key, "avg(device_properties.value::int) as average").group(:key)
+
+    dataResponse = {}
+    labels = Array.new
+    propertyValues = Array.new
+
+    propertiesAverage.each do |p|
+      labels << p.key
+      propertyValues << p.average.to_i
+    end
+
+    datasets = Array.new
+    datasets << chart_data(propertyValues)
+    dataResponse["datasets"] = datasets
+    dataResponse["labels"] = labels
+    expose dataResponse
+  end
+
   def properties_report
     return if !checkRequiredParams(:device_id, :property_id);
 
-    propertiesDevice = DeviceProperty.joins(:property).where(device_id: params[:device_id], property_id: params[:property_id]).order("device_properties.created_at ASC").select(:property_id, :value, :key, "device_properties.created_at as created_at")
+    propertiesDevice = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {device_id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}, property_id: params[:property_id]).order("device_properties.created_at ASC").select(:property_id, :value, :key, "device_properties.created_at as created_at")
 
     dataResponse = {}
     labels = Array.new
@@ -157,59 +203,22 @@ class Rest::DeviceController < Rest::ServiceController
     expose dataResponse
   end
 
-  def properties_report_old
-    return if !checkRequiredParams(:id);
-
-    propertiesDevice = DeviceProperty.joins(:property).where(device_id: params[:id]).order("device_properties.property_id ASC").order("device_properties.created_at ASC").select(:property_id, :value, :key, "device_properties.created_at as created_at")
-
-    id = -1
-    dataResponse = {}
-    labels = Array.new
-    propertyValues = Array.new
-    datasets = Array.new
-
-    propertiesDevice.each_with_index do |p, index|
-      id = id == -1 ? p.property_id : id
-      label = p.created_at.strftime("%Y-%m-%d")
-      if p.property_id == id
-        propertyValues << p.value
-        # if !labels.include?(label)
-          labels << label
-        # end
-      else
-        if !propertyValues.empty?
-          datasets << chart_data(propertyValues, p.key)
-        end
-
-        id = p.property_id
-        propertyValues = Array.new
-        propertyValues << p.value
-        # if !labels.include?(label)
-          labels << label
-        # end
-      end
-
-      if propertiesDevice.size - 1 == index && !propertyValues.empty?
-        datasets << chart_data(propertyValues, p.key)
-      end
-    end
-
-    dataResponse["datasets"] = datasets
-    dataResponse["labels"] = labels.sort
-    expose dataResponse
-  end
-
-  def chart_data(propertyValues, label)
+  def chart_data(propertyValues, label = nil)
     propertyData = {}
     primaryColor = Random.rand(0...220).to_s
-    propertyData["fillColor"] = "rgba(#{primaryColor},220,220,0.2)"
-    propertyData["strokeColor"] = "rgba(#{primaryColor},0,0,1)"
-    propertyData["pointColor"] = "rgba(#{primaryColor},0,0,1)"
-    propertyData["pointStrokeColor"] = "rgba(#{primaryColor},0,0,1)"
-    propertyData["pointHighlightFill"] = "rgba(#{primaryColor},0,0,1)"
-    propertyData["pointHighlightStroke"] = "rgba(#{primaryColor},0,0,1)"
+    secondaryColor = Random.rand(0...220).to_s
+    propertyData["fillColor"] = "rgba(#{primaryColor},#{secondaryColor},220,0.2)"
+    propertyData["strokeColor"] = "rgba(#{primaryColor},#{secondaryColor},0,1)"
+    propertyData["pointColor"] = "rgba(#{primaryColor},#{secondaryColor},0,1)"
+    propertyData["pointStrokeColor"] = "rgba(#{primaryColor},#{secondaryColor},0,1)"
+    propertyData["highlightFill"] = "rgba(#{primaryColor},#{secondaryColor},0,1)"
+    propertyData["highlightStroke"] = "rgba(#{primaryColor},#{secondaryColor},0,1)"
     propertyData["data"] = propertyValues
-    propertyData["label"] = label
+
+    if !label.nil?
+      propertyData["label"] = "#{primaryColor}"
+    end
+
     return propertyData
   end
 

@@ -8,10 +8,10 @@ class User < ActiveRecord::Base
   belongs_to :role
   has_and_belongs_to_many :sites, join_table: "site_users"
 
-  has_many :device_users
-  has_many :devices, :through =>  :device_users
+  has_many :customer_users
+  has_many :customers, :through => :customer_users
 
-  @@gridColumns = {:id => "Id",:customer_id => "Customer Id", :phone => "Phone",:email => "Email"}
+  @@gridColumns = {:id => "Id", :email => "Email", :role_name => "Role",:phone => "Phone"}
   @@gridRenderers = {:phone => 'phoneRenderer',:email => 'emailRenderer'}
 
   def self.gridColumns
@@ -23,10 +23,23 @@ class User < ActiveRecord::Base
   end
 
   def isAdmin?
-    return self.role_id == 1 #Role 1 is admin
+    return self.role.role_id == 'admin'
+  end
+
+  def isCaregiverAdmin?
+    return self.role.role_id == 'caregiveradmin'
+  end
+
+  def isSiteLogin?
+    return self.role.role_id == 'caregiver'
   end
 
   def valid_site?(site_id)
     return !self.sites.find_by(id: site_id).nil?
   end
+
+  def valid_customer_id(customer_id)
+    return !self.customers.find_by(customer_id: customer_id).nil?
+  end
+
 end

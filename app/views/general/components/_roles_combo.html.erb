@@ -1,5 +1,10 @@
 <select name="role_id" id="rolesSelector" class="form-control">
-    <% roles = Role.all
+    <% if isAdmin then
+         roles = Role.all
+       else
+         roles = Role.where(role_id: 'caregiver')
+       end
+
        roles.each do |type|
     %>
         <option value="<%= type.id %>" <%= "selected='true'" if selectedValue == type.id%>><%= type.name%></option>

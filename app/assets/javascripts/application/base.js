@@ -38,6 +38,18 @@ AppBase.doRequest = function(url,formData, method, success,failure,dataType){
         }
     }
 
+    if(typeof user != "undefined" && user.customer) {
+        if (typeof formData == "string") {
+            if (formData != "") {
+                formData += "&";
+            }
+            formData += "customer_id="+user.customer;
+        }
+        else{
+            formData["customer_id"] = user.customer;
+        }
+    }
+
     $.ajax(url,{
         data: formData,
         dataType: dataType,

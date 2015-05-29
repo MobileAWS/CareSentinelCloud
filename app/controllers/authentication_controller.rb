@@ -25,9 +25,15 @@ class AuthenticationController < Rest::ServiceController
       return;
     end
 
+    #Validate the customer id
+    if !user.isAdmin? && !user.valid_customer_id(params[:customer_id]) then
+      expose :message=>'User, password or customer id incorrect for this site', :error=>true
+      return
+    end
+
     #Validate the user site
-    if !user.isAdmin? && !user.valid_site?(params[:site]) then
-      expose :message=>'User or password incorrect for this site', :error=>true
+    if user.isSiteLogin? && !user.valid_site?(params[:site_id]) then
+      expose :message=>'User, password or customer id incorrect for this site', :error=>true
       return
     end
 
@@ -39,8 +45,9 @@ class AuthenticationController < Rest::ServiceController
     end
 
     # Create a new session
-    site = Site.find_by(id: params[:site])
-    token = generateUserSession(user, site)
+    site = Site.find_by(id: params[:site_id])
+    customer = Customer.find_by_customer_id params[:customer_id]
+    token = generateUserSession(user, site, customer)
 
     setCurrentUser user
     expose :token => token, :role => getCurrentRole.role_id
@@ -80,7 +87,7 @@ class AuthenticationController < Rest::ServiceController
 
   # Generate a user session for the given user and returns a token.
   # This method would scarcely go to the db more than once, if that ever happens.
-  def generateUserSession(user, site)
+  def generateUserSession(user, site, customer)
 
     begin
       token = SecureRandom.hex(20)
@@ -90,6 +97,7 @@ class AuthenticationController < Rest::ServiceController
     userSession = Session.new
     userSession.user = user
     userSession.site = site
+    userSession.customer = customer
     userSession.token = token
     userSession.save
 

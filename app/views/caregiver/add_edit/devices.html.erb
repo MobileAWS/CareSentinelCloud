@@ -9,7 +9,11 @@
     <% else %>
       <div class="form-group">
         <label for="name">Name</label>
-        <%= render "general/components/autocomplete", :targetValue => @targetEntity.id, :targetLabel => @targetEntity.name, :service => '/device/suggestions', :prefix_id => 'device' %>
+        <%= render "general/components/autocomplete", :targetValue => @targetEntity.id, :targetLabel => @targetEntity.name, :service => '/device/suggestions', :prefix_id => 'device', :placeholder => 'Device Name'%>
       </div>
     <% end %>
+      <div class="form-group">
+        <label for="name">Hardware ID</label>
+        <input type="text" class="form-control" id="hw_id" name="hw_id" required="true" value="<%= @targetEntity.hw_id%>"/>
+      </div>
 </form>
