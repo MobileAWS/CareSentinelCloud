@@ -8,12 +8,6 @@ class Rest::SiteConfigController < Rest::SecureController
    SCHEDULER = Rufus::Scheduler.new
 
    def self.init
-     # devices = DeviceProperty.all
-     # devices.each do |d|
-     #    properties = d.properties.select(:device_id, :property_id, :value, :name, :site_id, :created_at, :updated_at, :key, :metric)
-     #   d.each
-     # end
-
      #For migration
      if ActiveRecord::Base.connection.table_exists? 'site_configs'
        siteConfig = SiteConfig.where(name: 'purge_days')
@@ -33,7 +27,7 @@ class Rest::SiteConfigController < Rest::SecureController
    def purge_days
      return if !checkRequiredParams(:purge_days);
 
-     siteConfig = SiteConfig.find_by(name: 'purge_days', site_id: getCurrentSite.id)
+     siteConfig = SiteConfig.find_by(name: 'purge_days')
 
      if !siteConfig.nil?
        siteConfig.value = params[:purge_days]
@@ -70,10 +64,23 @@ class Rest::SiteConfigController < Rest::SecureController
   end
 
   def self.purge(siteConfig)
-    properties = DeviceProperty.properties.select(:device_id, :property_id, :value, :name, :site_id, :created_at, :updated_at, :key, :metric)
-    properties.each do |p|
-      puts p
+    devices = DeviceProperty.all
+    CSV.open("D:/purge_"+Time.new.strftime("%Y%m%d")+".csv", "wb") do |csv|
+      csv << ["Device Name", "Site Id", "Property Name", "Metric", "Value"]
+      devices.each do |d|
+        device =  d.device
+        date = Date.today - siteConfig.value.to_i
+        properties = device.properties.where("properties.created_at < '#{date}'").select(:id, :device_id, :property_id, :created_at, :updated_at, :key, :metric, :value)
+          properties.each do |p|
+            csv << [device.name, device.site_id, p.key, p.metric, p.value]
+            DeviceProperty.where(:property_id => p.id).destroy_all
+            p.delete
+          end
+      end
     end
+
+    siteConfig.updated_at = Time.new
+    siteConfig.save!
   end
 
 end

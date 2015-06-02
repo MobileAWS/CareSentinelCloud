@@ -1,13 +1,5 @@
-<% headers = ['Device Name', 'Device Site'] %>
+<% headers = ['Device Name', 'Property Name', 'Property Value', 'Property Metric'] %>
 <%= CSV.generate_line headers %>
-<% @devices.each do |d| %>
-    <%= CSV.generate_line([d.name, d.site.name]) %>
-    <% properties = d.properties.select(:key, :metric, :value)
-       headers = ['Device Properties'] %>
-        <%= CSV.generate_line headers %>
-        <% headers = ['Name', 'Metric', 'Value'] %>
-        <%= CSV.generate_line headers %>
-    <% properties.each do |p| %>
-        <%= CSV.generate_line([p.key, p.metric, p.value]) %>
-    <% end %>
+<% @properties.each do |p| %>
+    <%= CSV.generate_line([p.device_mapping.device.name, p.property.key, p.value, p.property.metric]) %>
 <% end %>

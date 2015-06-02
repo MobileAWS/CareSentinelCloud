@@ -4,6 +4,7 @@ class CreateUserSessions < ActiveRecord::Migration
       t.string :token
       t.belongs_to :user
       t.belongs_to :site
+      t.belongs_to :customer
       t.timestamps
     end
     execute %Q{ ALTER TABLE "sessions" ADD PRIMARY KEY ("token"); }

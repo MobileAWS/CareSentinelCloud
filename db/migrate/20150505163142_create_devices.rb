@@ -2,7 +2,7 @@ class CreateDevices < ActiveRecord::Migration
   def change
     create_table :devices do |t|
       t.string :name, null: false
-      t.belongs_to :site, null: false
+      t.string :hw_id, null: false
       t.timestamps
     end
 

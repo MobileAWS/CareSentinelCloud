@@ -17,8 +17,12 @@ class CreateUsers < ActiveRecord::Migration
       t.string :email,              null: false, default: ''
       t.string :encrypted_password, null: false, default: ''
       t.string :phone
-      t.integer :customer_id, null: false
       t.belongs_to :role
+      t.timestamps
+    end
+
+    create_table :customers do |t|
+      t.string :customer_id, null: false
       t.timestamps
     end
 
@@ -30,6 +34,6 @@ class CreateUsers < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index(:users, :customer_id, unique: true)
+    add_index(:roles, :name, unique: true)
   end
 end

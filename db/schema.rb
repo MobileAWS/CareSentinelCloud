@@ -16,25 +16,38 @@ ActiveRecord::Schema.define(version: 20150505164536) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "device_properties", force: true do |t|
-    t.integer "device_id"
-    t.integer "property_id"
-    t.string  "value",       null: false
-  end
-
-  add_index "device_properties", ["device_id", "property_id"], name: "index_device_properties_on_device_id_and_property_id", unique: true, using: :btree
-
-  create_table "device_users", force: true do |t|
-    t.integer "device_id"
+  create_table "customer_users", force: true do |t|
+    t.integer "customer_id"
     t.integer "user_id"
-    t.boolean "enable",    default: true, null: false
   end
 
-  add_index "device_users", ["device_id", "user_id"], name: "index_device_users_on_device_id_and_user_id", unique: true, using: :btree
+  create_table "customers", force: true do |t|
+    t.string   "customer_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "device_mappings", force: true do |t|
+    t.integer "device_id"
+    t.integer "site_id"
+    t.integer "user_id"
+    t.integer "customer_id"
+    t.boolean "enable",      default: true, null: false
+  end
+
+  add_index "device_mappings", ["device_id", "site_id", "user_id", "customer_id"], name: "unique_device_mapping", unique: true, using: :btree
+
+  create_table "device_properties", force: true do |t|
+    t.integer  "device_mapping_id"
+    t.integer  "property_id"
+    t.string   "value",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "devices", force: true do |t|
     t.string   "name",       null: false
-    t.integer  "site_id",    null: false
+    t.string   "hw_id",      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -53,10 +66,13 @@ ActiveRecord::Schema.define(version: 20150505164536) do
     t.datetime "updated_at"
   end
 
+  add_index "roles", ["name"], name: "index_roles_on_name", unique: true, using: :btree
+
   create_table "sessions", id: false, force: true do |t|
-    t.string   "token",      null: false
+    t.string   "token",       null: false
     t.integer  "user_id"
     t.integer  "site_id"
+    t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -88,7 +104,6 @@ ActiveRecord::Schema.define(version: 20150505164536) do
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "phone"
-    t.integer  "customer_id",                         null: false
     t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -101,7 +116,6 @@ ActiveRecord::Schema.define(version: 20150505164536) do
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
-  add_index "users", ["customer_id"], name: "index_users_on_customer_id", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 

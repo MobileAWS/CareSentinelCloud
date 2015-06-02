@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   get '/:userrole/add_edit' => 'navigate#add_edit'
   get '/:userrole/details' => 'navigate#details'
 
+  get '/:userrole/download_caregivers' => 'caregiver#download_caregivers'
+
 
 
   resources :user do
@@ -39,6 +41,8 @@ Rails.application.routes.draw do
       post 'generateUserId' => 'rest/user#generateUserId'
       post 'addSiteUser' => 'rest/user#addSite'
       post 'removeSiteUser' => 'rest/user#removeSite'
+      post 'addCustomerId' => 'rest/user#addCustomerId'
+      post 'removeCustomerId' => 'rest/user#removeCustomerId'
     end
   end
 
@@ -50,6 +54,16 @@ Rails.application.routes.draw do
       post 'delete' => 'rest/site#delete'
       get 'suggestions' => 'rest/site#suggestions'
     end
+    end
+
+  resources :customer do
+    collection do
+      get 'list' => 'rest/customer#list'
+      post 'create' => 'rest/customer#create'
+      post 'update' => 'rest/customer#update'
+      post 'delete' => 'rest/customer#delete'
+      get 'suggestions' => 'rest/customer#suggestions'
+    end
   end
 
   resources :device do
@@ -59,10 +73,14 @@ Rails.application.routes.draw do
       post 'update' => 'rest/device#update'
       post 'delete' => 'rest/device#delete'
       get 'suggestions' => 'rest/device#suggestions'
+      get 'properties_suggestions' => 'rest/device#properties_suggestions'
       post 'createdevices' => 'rest/device#createDevices'
       post 'editdevices' => 'rest/device#editDevices'
       post 'addproperties' => 'rest/device#addProperties'
       post  ':id/changestatus' => 'rest/device#change_status'
+      post ':id/properties' => 'rest/device#properties'
+      post ':device_id/properties_report/:property_id' => 'rest/device#properties_report'
+      post ':device_id/average_report' => 'rest/device#average_report'
       get  ':id/properties' => 'caregiver#device_properties'
       get 'download' => 'caregiver#download_devices'
     end

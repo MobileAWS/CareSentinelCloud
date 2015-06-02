@@ -1,6 +1,7 @@
 class Rest::SiteController < Rest::SecureController
 
-  AuthValidation.admin_access :site => [:list,:update,:delete,:suggestions]
+  AuthValidation.admin_access :site => [:list,:update,:delete]
+  AuthValidation.public_access :site => [:suggestions]
 
   def list
      expose paginateObject(Site.not_deleted.all)

@@ -19,6 +19,7 @@
 //= require moment-with-locales.min
 //= require bootstrap-datetimepicker.min
 //= require jquery.autocomplete.min
+//= require Chart.min
 
 
 

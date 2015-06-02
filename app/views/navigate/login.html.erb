@@ -1,11 +1,16 @@
 <%= javascript_include_tag 'application/login.js' %>
+
 <div class="container">
   <form class="form-signin text-center" role="form" id="signinForm" action="users/login" method="get">
     <div class="title"></div>
     <div class="inner-form">
       <input name="email" type="email" class="form-control" placeholder="Email address" required autofocus>
       <input name="password" type="password" class="form-control" placeholder="Password" required>
-      <select name="site" id="site" class="form-control selectpicker" required></select><br/>
+      <input name="customer_id" type="text" class="form-control" placeholder="Customer ID">
+
+      <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/site/suggestions', :prefix_id => 'site', :placeholder => 'Site' %>
+
+      <br/>
       <br/><span class="error-message hidden-element">Incorrect username or password for this site</span>
 
 
