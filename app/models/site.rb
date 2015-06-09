@@ -14,4 +14,8 @@ class Site < ActiveRecord::Base
     @@gridRenderers
   end
 
+  def self.find_site_by_name(site_name)
+    return Site.find_by_name site_name.upcase
+  end
+
 end

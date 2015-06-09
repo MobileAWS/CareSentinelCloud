@@ -16,7 +16,6 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users do |t|
       t.string :email,              null: false, default: ''
       t.string :encrypted_password, null: false, default: ''
-      t.string :phone
       t.belongs_to :role
       t.timestamps
     end
@@ -31,9 +30,11 @@ class CreateUsers < ActiveRecord::Migration
       t.string :value, null: false
       t.string :job_id, default: ''
       t.belongs_to :site, null: false
+      t.boolean :enabled, default: true
       t.timestamps
     end
 
     add_index(:roles, :name, unique: true)
+    add_index(:sites, :name, unique: true)
   end
 end

@@ -25,11 +25,12 @@ class Rest::SiteConfigController < Rest::SecureController
    end
 
    def purge_days
-     return if !checkRequiredParams(:purge_days);
+     return if !checkRequiredParams(:purge_days, :purge_enable);
 
      siteConfig = SiteConfig.find_by(name: 'purge_days')
 
      if !siteConfig.nil?
+       siteConfig.enabled = params[:purge_enable]
        siteConfig.value = params[:purge_days]
        siteConfig.save!
      end
@@ -39,7 +40,9 @@ class Rest::SiteConfigController < Rest::SecureController
        SCHEDULER.unschedule(siteConfig.job_id)
      end
 
-     Rest::SiteConfigController.schedule_site_purge(siteConfig)
+     if params[:purge_enable] == 'true'
+       Rest::SiteConfigController.schedule_site_purge(siteConfig)
+     end
 
      expose 'done'
    end

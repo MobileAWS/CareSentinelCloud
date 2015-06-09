@@ -78,10 +78,11 @@ ActiveRecord::Schema.define(version: 20150505164536) do
   end
 
   create_table "site_configs", force: true do |t|
-    t.string   "name",                    null: false
-    t.string   "value",                   null: false
+    t.string   "name",                      null: false
+    t.string   "value",                     null: false
     t.string   "job_id",     default: ""
-    t.integer  "site_id",                 null: false
+    t.integer  "site_id",                   null: false
+    t.boolean  "enabled",    default: true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -100,10 +101,11 @@ ActiveRecord::Schema.define(version: 20150505164536) do
     t.datetime "updated_at"
   end
 
+  add_index "sites", ["name"], name: "index_sites_on_name", unique: true, using: :btree
+
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
-    t.string   "phone"
     t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"

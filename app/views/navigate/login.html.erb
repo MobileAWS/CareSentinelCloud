@@ -2,6 +2,7 @@
 
 <div class="container">
   <form class="form-signin text-center" role="form" id="signinForm" action="users/login" method="get">
+    <input type="hidden" id="site_name" name="site_name">
     <div class="title"></div>
     <div class="inner-form">
       <input name="email" type="email" class="form-control" placeholder="Email address" required autofocus>
@@ -19,6 +20,9 @@
         Reset password
       </a>
     </div>
+  </form>
+  <form class="hidden-element" method="post" id="formHome">
+        <input type="hidden" id="token" name="token">
   </form>
 </div>
 

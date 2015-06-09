@@ -11,8 +11,8 @@ class User < ActiveRecord::Base
   has_many :customer_users
   has_many :customers, :through => :customer_users
 
-  @@gridColumns = {:id => "Id", :email => "Email", :role_name => "Role",:phone => "Phone"}
-  @@gridRenderers = {:phone => 'phoneRenderer',:email => 'emailRenderer'}
+  @@gridColumns = {:id => "Id", :email => "Email", :role_name => "Role"}
+  @@gridRenderers = {:email => 'emailRenderer'}
 
   def self.gridColumns
     @@gridColumns
@@ -23,19 +23,19 @@ class User < ActiveRecord::Base
   end
 
   def isAdmin?
-    return self.role.role_id == 'admin'
+    return self.role.role_id == Role::ADMIN_ROLE_ID
   end
 
   def isCaregiverAdmin?
-    return self.role.role_id == 'caregiveradmin'
+    return self.role.role_id == Role::CAREGIVER_ADMIN_ROLE_ID
   end
 
   def isSiteLogin?
-    return self.role.role_id == 'caregiver'
+    return self.role.role_id == Role::CAREGIVER_ROLE_ID
   end
 
-  def valid_site?(site_id)
-    return !self.sites.find_by(id: site_id).nil?
+  def valid_site?(site_name)
+    return self.sites.where("upper(name) = '#{site_name.upcase}'").count > 0
   end
 
   def valid_customer_id(customer_id)

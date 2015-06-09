@@ -4,14 +4,11 @@ class Rest::UserController < Rest::SecureController
   AuthValidation.token_action :user => [:generateUserId]
   # User creation
   def register (skipValidation = false)
-    return if !checkRequiredParams(:email,:password,:confirm_password,:sitesUser, :customersUser);
+    return if !checkRequiredParams(:email,:password,:confirm_password);
 
-    if params[:sitesUser].empty?
-      expose :message=>'Site must be provided', :error=>true
-      return
-    end
-
-    if params[:customersUser].empty?
+    role = Role.find_by(id: params[:role_id])
+    # role = Role.find params[:role_id]
+    if !role.nil? && role.role_id == Role::CAREGIVER_ADMIN_ROLE_ID && params[:customersUser].empty?
       expose :message=>'Customer ID must be provided', :error=>true
       return
     end
@@ -20,7 +17,6 @@ class Rest::UserController < Rest::SecureController
     newUser.email = params[:email]
     newUser.password = params[:password]
     newUser.password_confirmation = params[:confirm_password]
-    newUser.phone = params[:phone] if (!params[:phone].nil?)
     newUser.role_id = params[:role_id] unless params[:role_id].nil?
 
     siteIds = params[:sitesUser].split(",")

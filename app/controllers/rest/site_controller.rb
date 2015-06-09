@@ -10,7 +10,7 @@ class Rest::SiteController < Rest::SecureController
   def create
     return if !checkRequiredParams(:name);
     site = Site.new
-    site.name = params[:name]
+    site.name = params[:name].upcase
     site.save!
     expose 'done'
   end
@@ -21,7 +21,7 @@ class Rest::SiteController < Rest::SecureController
     if(tmpSite.nil?)
       error! :invalid_resource, :metadata => {:message => 'Site not found'}
     end
-    tmpSite.name = params[:name]
+    tmpSite.name = params[:name].upcase
     tmpSite.save!
     expose 'done'
   end

@@ -222,4 +222,55 @@ class Rest::DeviceController < Rest::ServiceController
     return propertyData
   end
 
+  # From properties view
+  def properties_list
+    if getCurrentUser.isAdmin?
+      propertiesList = Property.all.select("properties.id", "properties.key", "properties.metric","'N/A' as value", :created_at)
+    else
+      propertiesList = DeviceProperty.joins(:device_mapping).joins(:property).where(device_mappings: {site_id: getCurrentSite.id, user_id:  getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("properties.id", "properties.key", "properties.metric", :value, :created_at)
+    end
+
+    if !propertiesList.nil?
+      expose paginateObject(propertiesList)
+    else
+      expose ''
+    end
+  end
+
+  def create_property
+    user = getCurrentUser
+    return if !user.isAdmin? && !checkRequiredParams(:property_name, :device_id, :metric, :value);
+    return if user.isAdmin? && !checkRequiredParams(:property_name, :metric);
+
+    key = params[:property_name].downcase
+    propertySearch = Property.find_by_key key
+
+    if(propertySearch.nil?)
+      propertySearch = Property.new
+      propertySearch.key = key
+      propertySearch.metric = params[:metric]
+      propertySearch.save!
+    end
+
+    if !user.isAdmin?
+      device = Device.find params[:device_id]
+      session = Session.find_by_token params[:token]
+
+      #Must exists
+      deviceMapping = DeviceMapping.find_by(device_id: device.id, user_id: session.user_id, site_id: session.site_id,customer_id: session.customer_id)
+
+      if deviceMapping.nil?
+        error! :not_acceptable, :metadata => {:message => 'Device Mapping no found'}
+      end
+
+      deviceProperty = DeviceProperty.new
+      deviceProperty.device_mapping = deviceMapping
+      deviceProperty.property = propertySearch
+      deviceProperty.value = params[:value]
+      deviceProperty.save!
+    end
+
+    expose 'done'
+  end
+
 end

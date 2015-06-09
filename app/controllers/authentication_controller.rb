@@ -32,7 +32,7 @@ class AuthenticationController < Rest::ServiceController
     end
 
     #Validate the user site
-    if user.isSiteLogin? && !user.valid_site?(params[:site_id]) then
+    if user.isSiteLogin? && (params[:site_name].nil? || !user.valid_site?(params[:site_name])) then
       expose :message=>'User, password or customer id incorrect for this site', :error=>true
       return
     end
@@ -45,7 +45,7 @@ class AuthenticationController < Rest::ServiceController
     end
 
     # Create a new session
-    site = Site.find_by(id: params[:site_id])
+    site = Site.find_site_by_name params[:site_name]
     customer = Customer.find_by_customer_id params[:customer_id]
     token = generateUserSession(user, site, customer)
 

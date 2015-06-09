@@ -1,11 +1,11 @@
 # Basic info for all the environments
 
 site = Site.new
-site.name = 'default'
+site.name = 'DEFAULT'
 site.save
 
 siteTwo = Site.new
-siteTwo.name = 'test'
+siteTwo.name = 'TEST'
 siteTwo.save
 
 customerAdmin = Customer.new
@@ -124,10 +124,4 @@ config = SiteConfig.new
 config.name = 'purge_days'
 config.value = '45'
 config.site = site
-config.save!
-
-config = SiteConfig.new
-config.name = 'purge_days'
-config.value = '45'
-config.site = siteTwo
 config.save!
