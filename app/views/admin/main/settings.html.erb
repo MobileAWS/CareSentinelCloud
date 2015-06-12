@@ -1,6 +1,7 @@
 <script language="JavaScript">
     <% config = SiteConfig.find_by(name: 'purge_days') %>
     var configValue = '<%= config.value %>';
+    var configChecked = '<%= config.enabled %>';
 </script>
 
 <%= javascript_include_tag "application/user/config" %>
@@ -23,6 +24,12 @@
     <label>
       <input type="radio" name="purge_days" id="purge_days_90" value="90">
       90 Days
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+        <input type="checkbox" id="purge_enable">
+        Enabled
     </label>
   </div>
 </div>

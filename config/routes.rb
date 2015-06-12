@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   get '/' => 'navigate#login'
   get '/:userrole' => 'navigate#login'
-  get '/:userrole/home' => 'navigate#home'
+  post '/:userrole/home' => 'navigate#home'
   get '/:userrole/view' => 'navigate#view'
   get '/:userrole/add_edit' => 'navigate#add_edit'
   get '/:userrole/details' => 'navigate#details'
@@ -54,7 +54,16 @@ Rails.application.routes.draw do
       post 'delete' => 'rest/site#delete'
       get 'suggestions' => 'rest/site#suggestions'
     end
+  end
+
+  resources :property do
+    collection do
+      get 'list' => 'rest/device#properties_list'
+      post 'create' => 'rest/device#create_properti'
+      post 'update' => 'rest/device#update'
+      post 'delete' => 'rest/device#delete'
     end
+  end
 
   resources :customer do
     collection do

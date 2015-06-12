@@ -21,6 +21,7 @@ class NavigateController < ApplicationController
      @site = getCurrentSite
      @role = getCurrentRole
      @customer = getCurrentCustomer
+     @token = params[:token]
      render getRoleId+'/home'
   end
 

@@ -13,8 +13,8 @@ $(document).ready(function(){
            AppBase.doRequest("/device/"+ids[0]+"/properties_report/"+ids[1]+"", null, 'post', onDataReportLoaded, null, 'json');
        }
    });
-   console.log("Hi");
-    $("#btnAverageReport").click(function(){
+
+   $("#btnAverageReport").click(function(){
         if($("#device_id").val()){
             chartType = BAR_CHART;
             AppBase.doRequest("/device/"+$("#device_id").val()+"/average_report", null, 'post', onDataReportLoaded, null, 'json');
@@ -25,7 +25,6 @@ $(document).ready(function(){
 });
 
 function onDataReportLoaded(data){
-    console.log(data);
     if(data.response){
         if(chart){
             chart.destroy();
@@ -42,4 +41,8 @@ function onDataReportLoaded(data){
                 break;
         }
     }
+}
+
+function reportChanged(){
+    $(".collapse.in").removeClass('in');
 }

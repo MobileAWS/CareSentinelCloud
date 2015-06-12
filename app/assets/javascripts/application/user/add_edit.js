@@ -67,7 +67,6 @@ function removeSite(site_id){
 }
 
 function removeCustomer(customer_id){
-    console.log("Remove");
     customerId = customer_id;
     var data = new Object();
 

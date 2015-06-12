@@ -186,9 +186,14 @@ App.saveEntity = function(){
     AppBase.submitRestService(form,App.entitySaved);
 }
 
-App.entitySaved = function(){
-    AppBase.hideDialog(AppBase.inputDialog);
-    App.reloadEntityView();
+App.entitySaved = function(data){
+    if(!data.response.error){
+        App.reloadEntityView();
+        AppBase.hideDialog(AppBase.inputDialog);
+    }else{
+        AppBase.hideInputDialogLoading();
+        App.loadErrorMessage(data.response.message);
+    }
 }
 
 App.showDetailsView = function(){

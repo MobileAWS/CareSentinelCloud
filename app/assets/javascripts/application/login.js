@@ -2,6 +2,7 @@ $(document).ready(function(){
     $("#signinForm").submit(function(event){
         event.preventDefault();
         if(!$("#siteSelect").val()){$("#site_id").val('');}
+        $("#site_name").val($("#siteSelect").val());
         AppBase.showLoadingDialog("Signing Into Application");
         AppBase.submitRestService($(this),UserLogin.onLoginSuccess)
     });
@@ -29,11 +30,14 @@ $(document).ready(function(){
 var UserLogin = new Object();
 UserLogin.onLoginSuccess = function(data){
     AppBase.hideDialog(AppBase.loadingDialog);
-    if(!data.response || data.response.error || !data.response.token){
+    if(!data.response || data.response.error || !data.response.token || !data.response.role){
         $("#signinForm").find(".error-message").removeClass("hidden-element");
         return;
     }
-    window.location.href = '/'+data.response.role+'/home?token='+data.response.token;
+
+    $("#token").val(data.response.token);
+    $("#formHome").attr('action', data.response.role+'/home');
+    $("#formHome").submit();
 }
 
 UserLogin.onPasswordReset = function(data){
