@@ -59,7 +59,7 @@ Rails.application.routes.draw do
   resources :property do
     collection do
       get 'list' => 'rest/device#properties_list'
-      post 'create' => 'rest/device#create_properti'
+      post 'create' => 'rest/device#create_property'
       post 'update' => 'rest/device#update'
       post 'delete' => 'rest/device#delete'
     end
