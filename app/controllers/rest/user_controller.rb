@@ -3,7 +3,8 @@ class Rest::UserController < Rest::SecureController
   AuthValidation.public_access :user => [:register,:confirmDone,:resetPassword, :list, :removeCustomerId, :addCustomerId, :create, :update, :addSite, :removeSite, :delete]
   AuthValidation.token_action :user => [:generateUserId]
   # User creation
-  def register (skipValidation = false)
+
+  def register (skipValidation = true)
     return if !checkRequiredParams(:email,:password,:confirm_password);
 
     role = Role.find_by(id: params[:role_id])
@@ -74,13 +75,13 @@ class Rest::UserController < Rest::SecureController
       value = value.downcase
 
       if getCurrentUser.isAdmin?
-        usersSearch = User.joins(:role).where("lower(email) like '%#{value}%'").select(:id, :email, :phone, "roles.name as role_name");
+        usersSearch = User.joins(:role).where("lower(email) like '%#{value}%'").select(:id, :email, "roles.name as role_name");
       else
-        usersSearch = User.joins(:role).joins(:customers).where(customer_users: {customer_id: getCurrentCustomer.id}).where("lower(email) like '%#{value}%' AND roles.role_id = 'caregiver'").select(:id, :email, :phone, "roles.name as role_name");
+        usersSearch = User.joins(:role).joins(:customers).where(customer_users: {customer_id: getCurrentCustomer.id}).where("lower(email) like '%#{value}%' AND roles.role_id = 'caregiver'").select(:id, :email, "roles.name as role_name");
       end
 
     end
-    usersSearch = User.all.select(:email, :phone, "roles.name as role_name") if usersSearch.nil?
+    usersSearch = User.all.select(:email, "roles.name as role_name") if usersSearch.nil?
     expose paginateObject(usersSearch)
   end
 
