@@ -4,7 +4,7 @@ $(document).ready(function(){
         if(!$("#siteSelect").val()){$("#site_id").val('');}
         $("#site_name").val($("#siteSelect").val());
         AppBase.showLoadingDialog("Signing Into Application");
-        AppBase.submitRestService($(this),UserLogin.onLoginSuccess)
+        AppBase.submitRestService($(this),UserLogin.onLoginSuccess);
     });
 
     $("#resetpasswordForm").submit(function(event){

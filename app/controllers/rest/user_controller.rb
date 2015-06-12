@@ -75,13 +75,13 @@ class Rest::UserController < Rest::SecureController
       value = value.downcase
 
       if getCurrentUser.isAdmin?
-        usersSearch = User.joins(:role).where("lower(email) like '%#{value}%'").select(:id, :email, "roles.name as role_name");
+        usersSearch = User.not_deleted.joins(:role).where("lower(email) like '%#{value}%'").select(:id, :email, "roles.name as role_name");
       else
-        usersSearch = User.joins(:role).joins(:customers).where(customer_users: {customer_id: getCurrentCustomer.id}).where("lower(email) like '%#{value}%' AND roles.role_id = 'caregiver'").select(:id, :email, "roles.name as role_name");
+        usersSearch = User.not_deleted.joins(:role).joins(:customers).where(customer_users: {customer_id: getCurrentCustomer.id}).where("lower(email) like '%#{value}%' AND roles.role_id = 'caregiver'").select(:id, :email, "roles.name as role_name");
       end
 
     end
-    usersSearch = User.all.select(:email, "roles.name as role_name") if usersSearch.nil?
+    usersSearch = User.not_deleted.all.select(:email, "roles.name as role_name") if usersSearch.nil?
     expose paginateObject(usersSearch)
   end
 
@@ -92,7 +92,9 @@ class Rest::UserController < Rest::SecureController
     if tmpUser.nil?
       error! :invalid_resource, :metadata => {:message => 'User not found'}
     end
-    tmpUser.delete
+    tmpUser.deleted = true
+    tmpUser.save!
+
     expose 'done'
   end
 
@@ -101,7 +103,7 @@ class Rest::UserController < Rest::SecureController
     if params[:user_id].nil? then
       user = getCurrentUser
     else
-      user = User.find(params[:user_type].to_i)
+      user = User.not_deleted.find(params[:user_type].to_i)
     end
 
     if user.nil? then
@@ -114,7 +116,7 @@ class Rest::UserController < Rest::SecureController
 
   def resetPassword
     return unless checkRequiredParams :email
-    user = User.where('lower(email) = :email',{email: params[:email].downcase}).first
+    user = User.not_deleted.where('lower(email) = :email',{email: params[:email].downcase}).first
     if !user.nil?
       user.send_reset_password_instructions
     end
@@ -129,7 +131,7 @@ class Rest::UserController < Rest::SecureController
   def addCustomerId
     return if !checkRequiredParams(:customer_number, :user_id);
 
-    user = User.find(params[:user_id])
+    user = User.not_deleted.find(params[:user_id])
     customerUserSearch = user.customers.find_by(customer_id: params[:customer_number])
     if customerUserSearch.nil?
       customer = Customer.find_by_customer_id params[:customer_number]
@@ -169,7 +171,7 @@ class Rest::UserController < Rest::SecureController
   def addSite
     return if !checkRequiredParams(:site_id, :user_id);
 
-    user = User.find(params[:user_id])
+    user = User.not_deleted.find(params[:user_id])
     siteSearch = user.sites.find_by(id: params[:site_id])
     if siteSearch.nil?
       siteUser = SiteUser.new

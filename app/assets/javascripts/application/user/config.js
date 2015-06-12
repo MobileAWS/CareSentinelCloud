@@ -1,4 +1,6 @@
 $(document).ready(function(){
+    $("#successMessage").hide(0);
+
     var config = configValue;
     if(config){
         $("#purge_days_"+config).prop('checked', true);
@@ -29,6 +31,6 @@ function updateConfig(){
 
 function onPurgeSaved(data){
     AppBase.hideDialog(AppBase.loadingDialog);
-    App.showModalMessage('Success', 'Updated successfully!');
-
+    $("#successMessage").html("Updated successfully!");
+    $("#successMessage").show(0);
 }

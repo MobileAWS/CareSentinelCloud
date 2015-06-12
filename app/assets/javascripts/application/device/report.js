@@ -34,10 +34,10 @@ function onDataReportLoaded(data){
 
         switch(chartType){
             case LINE_CHART:
-                chart = new Chart(ctx).Line(data.response,{});
+                chart = new Chart(ctx).Line(data.response,{animation: false});
                 break;
             case BAR_CHART:
-                chart = new Chart(ctx).Bar(data.response,{});
+                chart = new Chart(ctx).Bar(data.response,{animation: false});
                 break;
         }
     }

@@ -11,14 +11,13 @@
 
       <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/site/suggestions', :prefix_id => 'site', :placeholder => 'Site' %>
 
-      <br/>
       <br/><span class="error-message hidden-element">Incorrect username or password for this site</span>
 
 
-      <button id="signinButton" class="btn btn-lg btn-primary btn-block submit-button">Sign in</button>
+      <button id="signinButton" class="btn btn-lg btn-primary btn-block submit-button">Sign in</button><br/>
       <a href="#" data-toggle="modal" data-target="#forgotModal" style="float: right;">
         Reset password
-      </a>
+      </a><br/>
     </div>
   </form>
   <form class="hidden-element" method="post" id="formHome">

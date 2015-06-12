@@ -1,6 +1,7 @@
 require 'master_cache'
 
 class User < ActiveRecord::Base
+  extend DeleteableModel
 
   attr_accessible :email, :type
   devise :database_authenticatable, :registerable,:recoverable, :validatable, :confirmable

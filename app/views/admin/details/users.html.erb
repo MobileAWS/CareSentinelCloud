@@ -4,12 +4,38 @@
       <div class="row"><div class="col-md-12 details-label">Email</div></div>
       <div class="row"><div class="col-md-12"><%= @targetEntity.email %></div></div>
     </div>
-  </div>
-  <div class="row">
     <div class="col-md-6">
       <div class="row"><div class="col-md-12 details-label">Role</div></div>
       <div class="row"><div class="col-md-12"><%= @targetEntity.role.name %></div></div>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <label>User Sites</label>
+            <table id="siteNameTable" style="min-width: 200px; text-align: center;" border="1" align="center">
+              <tr>
+                <th style="text-align: center;">Site Name</th>
+              </tr>
+              <% @targetEntity.sites.each do |s|%>
+                  <tr id="tr<%= s.id %>">
+                    <td><%= s.name %></td>
+                  </tr>
+              <% end %>
+            </table>
+      </div>
+    <div class="col-sm-6">
+      <label>User Customer IDs</label>
+        <table id="customerIdTable" style="min-width: 200px; text-align: center;" border="1" align="center">
+          <tr>
+            <th style="text-align: center;">Customer ID</th>
+          </tr>
+          <% @targetEntity.customers.each do |c|%>
+              <tr id="tr<%= c.id %>">
+                <td><%= c.customer_id %></td>
+              </tr>
+          <% end %>
+        </table>
+      </div>
   </div>
   <br/>
 </div>

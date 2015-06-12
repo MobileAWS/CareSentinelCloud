@@ -17,6 +17,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :email,              null: false, default: ''
       t.string :encrypted_password, null: false, default: ''
       t.belongs_to :role
+      t.boolean :deleted, default: false
       t.timestamps
     end
 

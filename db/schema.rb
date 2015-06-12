@@ -104,9 +104,10 @@ ActiveRecord::Schema.define(version: 20150505164536) do
   add_index "sites", ["name"], name: "index_sites_on_name", unique: true, using: :btree
 
   create_table "users", force: true do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "email",                  default: "",    null: false
+    t.string   "encrypted_password",     default: "",    null: false
     t.integer  "role_id"
+    t.boolean  "deleted",                default: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "reset_password_token"

@@ -9,7 +9,7 @@ class AuthenticationController < Rest::ServiceController
   # like confirm user / recover a pwd
 
   def new
-    user = User.find_for_database_authentication(:email => params[:email])
+    user = User.not_deleted.find_for_database_authentication(:email => params[:email])
     if user.nil? then
       expose :message=>'User or password incorrect for this site', :error=>true
       return;
