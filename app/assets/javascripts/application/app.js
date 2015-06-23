@@ -4,6 +4,7 @@ $(document).ready(function(){
     $("[role='entityLink']").click(App.entityLinkClick);
     $("[role='entityLink']").get(0).click();
     $(".logout-button").click(App.logout);
+    $(".total-height").css("height", ($(document).height()-20)+"px");
 });
 
 App.logout = function(event){
@@ -32,6 +33,7 @@ App.loadEntityView = function(data){
     var searchable = entityGrid.data("searchable");
     var columns = new Array();
     var columnDefs = new Array();
+    var order = new Object();
     columnDefs.push({
             "targets":[0],
             "visible": false,
@@ -47,6 +49,11 @@ App.loadEntityView = function(data){
                 "render": AppBase[renderer]
             });
         }
+        var columnOrder = $(this).data("columnorder");
+        if(columnOrder != null && columnOrder != ""){
+            order = [[index, columnOrder]]
+        }
+
     });
 
     entityGrid.on("xhr.dt",function(e,settings,json){
@@ -74,7 +81,7 @@ App.loadEntityView = function(data){
         "searching": searchable,
         "search":"",
         "bFilter": searchable,
-        "ordering": false,
+        "order" : order,
         "columnDefs":columnDefs,
         "language":{
             "search": ""

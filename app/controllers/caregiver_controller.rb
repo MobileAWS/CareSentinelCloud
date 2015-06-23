@@ -18,6 +18,24 @@ class CaregiverController < ApplicationController
     render "caregiver/device/download_devices", :layout => false
   end
 
+  def export_historic_report
+    @properties = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {device_id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}, property_id: params[:property_id]).order("device_properties.created_at ASC")
+
+    headers['Content-Disposition'] = "attachment; filename=\"historic_report#{Time.now.strftime("_%d_%m_%Y%H%M")}.csv\""
+    headers['Content-Type'] ||= 'text/csv'
+
+    render "caregiver/device/historic_report", :layout => false
+  end
+
+  def export_average_report
+    @properties = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {device_id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}).select(:key, "avg(device_properties.value::int) as average").group(:key)
+
+    headers['Content-Disposition'] = "attachment; filename=\"average#{Time.now.strftime("_%d_%m_%Y%H%M")}.csv\""
+    headers['Content-Type'] ||= 'text/csv'
+
+    render "caregiver/device/average_report", :layout => false
+  end
+
   def download_caregivers
     @users = User.joins(:sites).joins(:role).where(" roles.role_id = 'caregiver' ").select(:email, "sites.name as site_name", :customer_id, "roles.name as role_name")
 

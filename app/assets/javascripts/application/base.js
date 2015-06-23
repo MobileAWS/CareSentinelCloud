@@ -135,7 +135,7 @@ AppBase.showInputDialog = function(url,options){
 }
 
 AppBase.initializeData = function(){
-    $("[role='datetime-picker']").datetimepicker();
+    $("[role='datetime-picker']").datetimepicker({autoclose: true});
 
 
     $("[role='autocomplete']").each(function(index,element){
@@ -151,6 +151,9 @@ AppBase.initializeData = function(){
             onSelect: function (suggestion) {
                 var target =  $(this).data("target");
                 $("#"+target).val(suggestion.data);
+                if($(this).data("onselect")){
+                    eval($(this).data("onselect")+"("+suggestion.data+")");
+                }
             }
         });
     });

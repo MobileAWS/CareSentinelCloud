@@ -1,29 +1,33 @@
-<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#historicReport" aria-expanded="false" aria-controls="historicReport" onclick="reportChanged();">
+<div class="form-group">
+    <label>Device Name</label>
+    <div class="input-group col-lg-4">
+      <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/device/suggestions', :prefix_id => 'device', :placeholder => '', :onSelect => 'deviceSelect' %>
+    </div>
+</div>
+
+<div class="form-group">
+    <label>Property Name</label>
+    <div class="input-group col-lg-4">
+      <select id="propertiesSelect">
+         <option value="">Select a Device</option>
+      </select>
+    </div>
+</div>
+
+<button class="btn btn-primary" disabled id="historicReportButton" type="button" aria-expanded="false" aria-controls="historicReport">
   Historic Report
 </button>
 
-<button class="btn btn-primary" id="averageReportButton" type="button" data-toggle="collapse" data-target="#averageReport" aria-expanded="false" aria-controls="averageReport" onclick="reportChanged();">
+<button class="btn btn-primary" disabled id="averageReportButton" type="button" aria-expanded="false" aria-controls="averageReport">
   Average Report
 </button>
 
 <div class="collapse" id="historicReport">
-  <br/><label>Device property Name</label>
-    <div class="input-group col-lg-4">
-      <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/device/properties_suggestions', :prefix_id => 'property_device', :placeholder => '' %>
-      <span class="input-group-btn">
-        <button class="btn btn-default" id="btnReport" type="button">Historic Report</button>
-      </span>
-    </div>
+    <%= link_to "Export Historic Report",{ controller: "caregiver", action: "export_historic_report", token: params[:token], format: "csv"}, class: "btn btn-primary", id: "linkExportHistoric" %>
 </div>
 
 <div class="collapse" id="averageReport">
-  <br/><label>Device Name</label>
-  <div class="input-group col-lg-4">
-    <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/device/suggestions', :prefix_id => 'device', :placeholder => '' %>
-    <span class="input-group-btn">
-        <button class="btn btn-default" id="btnAverageReport" type="button">Average Report</button>
-      </span>
-  </div>
+    <%= link_to "Export Average Report",{ controller: "caregiver", action: "export_average_report", token: params[:token], format: "csv"}, class: "btn btn-primary", id: "linkExportAverage" %>
 </div>
 
 <div>

@@ -1,0 +1,5 @@
+<% headers = ['Property Name', 'Average'] %>
+<%= CSV.generate_line headers %>
+<% @properties.each do |p| %>
+<%= CSV.generate_line([p.key, p.average]) %>
+<% end %>

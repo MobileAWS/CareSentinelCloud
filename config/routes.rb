@@ -92,6 +92,8 @@ Rails.application.routes.draw do
       post ':device_id/average_report' => 'rest/device#average_report'
       get  ':id/properties' => 'caregiver#device_properties'
       get 'download' => 'caregiver#download_devices'
+      get 'export_historic_report' => 'caregiver#export_historic_report'
+      get 'export_average_report' => 'caregiver#export_average_report'
     end
   end
 

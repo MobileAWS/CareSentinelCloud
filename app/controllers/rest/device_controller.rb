@@ -3,7 +3,7 @@ class Rest::DeviceController < Rest::ServiceController
   include AuthValidation
 
   def list
-    devicesSearch = DeviceMapping.joins(:device).select("devices.id", :name,:hw_id, :site_id, :enable).where(site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id)
+    devicesSearch = DeviceMapping.joins(:device).select("devices.id", :name,:hw_id, :site_id, :enable, :created_at).where(site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id)
     if !params[:search].nil? && !devicesSearch.nil?
       value = params[:search][:value].nil? ? '' :  params[:search][:value]
       value = value.downcase
@@ -31,7 +31,7 @@ class Rest::DeviceController < Rest::ServiceController
   end
 
   def create
-    return if !checkRequiredParams(:deviceSelect, :hw_id);
+      return if !checkRequiredParams(:deviceSelect, :hw_id);
     self.registerDevice(params[:deviceSelect], params[:hw_id], params[:token], params[:customer_id], params[:site])
   end
 
@@ -57,15 +57,14 @@ class Rest::DeviceController < Rest::ServiceController
   def suggestions
     return if !checkRequiredParams(:query);
     name = params[:query];
-    search = Device.select('id as data','name as value').where("lower(devices.name) like '%#{name.downcase}%'");
+    search = DeviceMapping.joins(:device).select("devices.id as data , devices.name as value").where("lower(devices.name) like '%#{name.downcase}%'").where(site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id)
     expose :suggestions => search
   end
 
   def properties_suggestions
-    return if !checkRequiredParams(:query);
-    name = params[:query];
-    search = DeviceProperty.joins(:property).joins(device_mapping: :device).where(device_mappings: {site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}).where("(lower(devices.name) like '%#{name.downcase}%' OR lower(properties.key) like '%#{name.downcase}%')").select("DISTINCT(devices.id||','||properties.id) as data","devices.name||' - '||properties.key as value")
-    expose :suggestions => search
+    return if !checkRequiredParams(:device_id);
+    search = DeviceProperty.joins(:property).joins(device_mapping: :device).where(device_mappings: {device_id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}).select("distinct(properties.key)", :property_id)
+    expose search
   end
 
   def addProperties
@@ -239,8 +238,8 @@ class Rest::DeviceController < Rest::ServiceController
 
   def create_property
     user = getCurrentUser
-    return if !user.isAdmin? && !checkRequiredParams(:property_name, :device_id, :metric, :value);
-    return if user.isAdmin? && !checkRequiredParams(:property_name, :metric);
+    return if !user.isAdmin? && !checkRequiredParams(:property_name, :device_id, :metric, :value, :created_at);
+    return if user.isAdmin? && !checkRequiredParams(:property_name, :metric, :created_at);
 
     key = params[:property_name].downcase
     propertySearch = Property.find_by_key key
@@ -267,6 +266,7 @@ class Rest::DeviceController < Rest::ServiceController
       deviceProperty.device_mapping = deviceMapping
       deviceProperty.property = propertySearch
       deviceProperty.value = params[:value]
+      deviceProperty.created_at = Date.strptime(params[:created_at], '%m/%d/%Y %I:%M %p')
       deviceProperty.save!
     end
 

@@ -28,11 +28,13 @@ ActiveRecord::Schema.define(version: 20150505164536) do
   end
 
   create_table "device_mappings", force: true do |t|
-    t.integer "device_id"
-    t.integer "site_id"
-    t.integer "user_id"
-    t.integer "customer_id"
-    t.boolean "enable",      default: true, null: false
+    t.integer  "device_id"
+    t.integer  "site_id"
+    t.integer  "user_id"
+    t.integer  "customer_id"
+    t.boolean  "enable",      default: true, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "device_mappings", ["device_id", "site_id", "user_id", "customer_id"], name: "unique_device_mapping", unique: true, using: :btree
@@ -41,6 +43,8 @@ ActiveRecord::Schema.define(version: 20150505164536) do
     t.integer  "device_mapping_id"
     t.integer  "property_id"
     t.string   "value",             null: false
+    t.datetime "dismiss_time"
+    t.datetime "dismiss_duration"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

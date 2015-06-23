@@ -40,6 +40,26 @@ class Rest::ServiceController < RocketPants::Base
   def paginateObject(target)
     perPage = params[:per_page].nil? ? 10 : params[:per_page]
     page = params[:page].nil? ? 1 : params[:page]
+
+    if !params[:order].nil?
+      params[:order].each do |columnOrder|
+        order = columnOrder[1]
+        columnIndex = order[:column]
+        columnData =  params[:columns][columnIndex]
+
+        if !columnData.nil?
+          orderQuery = "#{columnData[:data]} #{order[:dir].upcase}"
+          target = target.order(orderQuery)
+        end
+      end
+    end
+
     target.paginate(:page => page,:per_page => perPage)
+  end
+
+  def orderObject(target)
+
+
+    return target
   end
 end

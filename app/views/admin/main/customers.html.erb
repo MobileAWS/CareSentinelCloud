@@ -1,3 +1,5 @@
 <% @availableActions = [:edit,:delete,:details] if @availableActions.nil? %>
-<span class="section-title">Customers IDs</span><br/><br/>
+<div class="pageheader">
+  <h2><i class="fa fa-home"></i>Customers IDs</h2>
+</div>
 <%= render 'general/entity_grid' %>

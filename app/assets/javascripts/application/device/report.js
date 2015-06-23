@@ -6,17 +6,20 @@ var chart = null;
 var chartType = null;
 
 $(document).ready(function(){
-   $("#btnReport").click(function(){
-       if($("#property_device_id").val()){
+    console.log("Load");
+
+   $("#historicReportButton").click(function(){
+       if($("#device_id").val() && $("#propertiesSelect").val()){
            chartType = LINE_CHART;
-           var ids = $("#property_device_id").val().split(',');
-           AppBase.doRequest("/device/"+ids[0]+"/properties_report/"+ids[1]+"", null, 'post', onDataReportLoaded, null, 'json');
+           historicExportHref($("#device_id").val(), $("#propertiesSelect").val());
+           AppBase.doRequest("/device/"+$("#device_id").val()+"/properties_report/"+$("#propertiesSelect").val()+"", null, 'post', onDataReportLoaded, null, 'json');
        }
    });
 
-   $("#btnAverageReport").click(function(){
+   $("#averageReportButton").click(function(){
         if($("#device_id").val()){
             chartType = BAR_CHART;
+            averageExportHref($("#device_id").val());
             AppBase.doRequest("/device/"+$("#device_id").val()+"/average_report", null, 'post', onDataReportLoaded, null, 'json');
         }
     });
@@ -24,8 +27,35 @@ $(document).ready(function(){
     AppBase.initializeData();
 });
 
+function deviceSelect(deviceId){
+    if(deviceId){
+        AppBase.doRequest("/device/properties_suggestions?device_id="+deviceId, null, 'get', onPropertiesLoaded, null, 'json');
+    }
+}
+
+function onPropertiesLoaded(data){
+    var propertyOptions = '';
+
+    if(data.response && data.count > 0){
+        $(data.response).each(function(index, element){
+            propertyOptions += "<option value='"+element.property_id+"'>"+element.key+"</option>";
+        });
+
+        $("#historicReportButton").attr('disabled', false);
+        $("#averageReportButton").attr('disabled', false);
+    }else{
+        propertyOptions = "<option value=''>Device must have properties</option>";
+
+        $("#historicReportButton").attr('disabled', true);
+        $("#averageReportButton").attr('disabled', true);
+    }
+
+    $("#propertiesSelect").html(propertyOptions);
+}
+
 function onDataReportLoaded(data){
     if(data.response){
+
         if(chart){
             chart.destroy();
         }
@@ -43,6 +73,26 @@ function onDataReportLoaded(data){
     }
 }
 
-function reportChanged(){
-    $(".collapse.in").removeClass('in');
+function historicExportHref(deviceId, propertyId){
+
+    if($("#linkExportHistoric").attr('old_href')){
+        var href = $("#linkExportHistoric").attr('old_href');
+    }else{
+        var href = $("#linkExportHistoric").prop('href');
+        $("#linkExportHistoric").attr('old_href', href);
+    }
+
+    $("#linkExportHistoric").attr('href', href+'&device_id='+deviceId+'&property_id='+propertyId);
+}
+
+function averageExportHref(deviceId){
+
+    if($("#linkExportAverage").attr('old_href')){
+        var href = $("#linkExportAverage").attr('old_href');
+    }else{
+        var href = $("#linkExportAverage").prop('href');
+        $("#linkExportAverage").attr('old_href', href);
+    }
+
+    $("#linkExportAverage").attr('href', href+'&device_id='+deviceId);
 }

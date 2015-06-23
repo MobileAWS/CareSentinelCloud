@@ -12,15 +12,22 @@
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="activemonitors">
-      <br/><span class="section-title">Devices Caregiver</span><br/><br/>
+      <div class="pageheader">
+        <h2><i class="fa fa-home"></i>Devices</h2>
+      </div>
       <% @entity_searchable = true; %>
       <%= render 'general/entity_grid' %>
     </div>
     <div role="tabpanel" class="tab-pane" id="reporting">
+      <div class="pageheader">
+        <h2><i class="fa fa-home"></i>Reports</h2>
+      </div>
       <br/><%= render 'caregiver/device/device_reports' %>
     </div>
     <div role="tabpanel" class="tab-pane" id="download">
-      <br/><span class="section-title">Download Devices</span><br/><br/>
+      <div class="pageheader">
+        <h2><i class="fa fa-home"></i>Download Devices</h2>
+      </div>
       <%= link_to "Download Devices Info",{ controller: "caregiver", action: "download_devices", token: params[:token], format: "csv"}, class: "btn btn-primary" %>
     </div>
   </div>

@@ -17,3 +17,32 @@
  *= require_tree .
  *= require_self
  */
+
+.leftpanel{
+    width: 330px;
+}
+
+.mainpanel{
+    margin-left: 330px
+}
+
+.btn-xxs{
+    padding: 0px 5px;
+}
+
+.leftpanel .checkbox label{
+    color: #ffffff !important;
+    font-size: 12px;
+}
+
+.leftpanel .toogle-section-button{
+    margin-right: 7px;
+}
+
+.boxy .newline{
+    margin-top: 10px;
+}
+
+.boxy input{
+    padding: 5px;
+}

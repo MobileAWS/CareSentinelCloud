@@ -12,6 +12,11 @@
    else
      colActions = {}
    end
+   if entityClass.methods(false).include?(:columnOrder) then
+     columnOrder =  entityClass.columnOrder
+   else
+     columnOrder = {}
+   end
 %>
 <%= render "general/entity_buttons" %>
 <% if @entity_deleteable then %>
@@ -24,7 +29,8 @@
       <thead>
         <tr>
             <% columns.each do |name,value| %>
-              <td data-field="<%= name %>" data-renderer="<%= columnRenderers[name]%>"> <%= value %>
+              <td data-field="<%= name %>" data-renderer="<%= columnRenderers[name]%>" data-columnorder="<%= columnOrder[name]%>">
+                <%= value %>
                   <% if colActions[name] then %>
                       <input type="hidden" id="colAction<%= colActions[name][:index] %>" value="<%= colActions[name][:action] %>" >
                       <input type="hidden" id="colActionTitle<%= colActions[name][:index] %>" value="<%= colActions[name][:action_title] %>" >
