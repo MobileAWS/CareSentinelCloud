@@ -116,7 +116,7 @@
 }
 
 .main-navbar{
-  background: linear-gradient(to right,#62c1e4 , #4d6086) !important;
+  background: #4d6086 !important;
   color: #ffffff !important;
   height: 100%;
 }
@@ -128,7 +128,9 @@
 
 .navbar-brand{
   background: image_url("logo-toolbar.png")  no-repeat center center rgba(0,0,0,0);
+  background-size: 177px 32px;
   width: 205px;
+  margin-left: -20px;
 }
 
 .main-navbar .navbar-toggle{
@@ -140,19 +142,27 @@
 }
 
 .main-navbar .navbar-nav .active{
-  background-color: #4d6086;
-  border-radius: 5px;
   margin-top: 1px;
   margin-bottom: 1px;
+  border-bottom: 1px solid #00FF40;
+}
+
+.lightActive{
+  background-color: #62c1e4;
 }
 
 .main-navbar .navbar-nav li{
   width: 100%;
-  text-align: center;
+  text-align: left;
+}
+
+.nav>li>a:focus{
+  background-color: inherit;
 }
 
 .headerbar {
-  background: #fff;
+  background: #62c1e4;
+  margin-left: 16.67%;
 }
 
 .headerbar::after {
@@ -161,9 +171,24 @@
   content: '';
 }
 
+.headermenu{
+  list-style-type: none;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
 .main-navbar .navbar-nav a:hover{
-  background-color: #4d6086;
+  border-bottom: 1px solid white;
+  background-color: #62c1e4 !important;
   border-radius: 5px;
+}
+
+.main-navbar .navbar-nav a{
+  border-bottom: 1px solid #62c1e4;
+}
+
+ul.nav {
+  width: 100%;
 }
 
 .main-sidebar{
@@ -184,7 +209,10 @@
   background: image_url("logout.png")  no-repeat left center;
   height: 50px;
   min-width: 100px;
+  font-size: 18px;
   padding-left: 38px !important;
+  margin-right: 5px;
+  color: black;
 }
 
 .entity-grid .selected td{

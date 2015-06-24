@@ -4,7 +4,6 @@ $(document).ready(function(){
     $("[role='entityLink']").click(App.entityLinkClick);
     $("[role='entityLink']").get(0).click();
     $(".logout-button").click(App.logout);
-    $(".total-height").css("height", ($(document).height()-20)+"px");
 });
 
 App.logout = function(event){
@@ -26,8 +25,19 @@ App.entityLinkClick = function(event){
 
 App.loadEntityView = function(data){
 
+    $("[role='contentIn']").empty();
+
+    $(data).find("[role='contentFor']").each(function(index, element){
+        var idFor = $(element).data("contentfor");
+        $(element).removeAttr('role');
+        if(idFor){
+            $("#"+idFor).html(element);
+        }
+    });
+
     $(".body-content").empty();
     $(".body-content").html(data);
+    $("[role='contentFor']").remove();
 
     var entityGrid = $(".entity-grid");
     var searchable = entityGrid.data("searchable");
