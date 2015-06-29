@@ -7,6 +7,6 @@
 
        roles.each do |type|
     %>
-        <option value="<%= type.id %>" <%= "selected='true'" if selectedValue == type.id%>><%= type.name%></option>
+        <option value="<%= type.role_id %>" <%= "selected='true'" if selectedValue == type.id%>><%= type.name%></option>
     <% end %>
 </select>

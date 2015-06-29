@@ -73,9 +73,24 @@ class Rest::DeviceController < Rest::ServiceController
     device = params[:device]
 
     session = Session.find_by_token params[:token]
+    searchDevice = Device.find_by(hw_id: device[:hw_id])
 
-    #Must exists
-    deviceMapping = DeviceMapping.find_by(device_id: device[:id], user_id: session.user_id, site_id: session.site_id,customer_id: session.customer_id)
+    if searchDevice.nil?
+      searchDevice = Device.new
+      searchDevice.name = device[:name]
+      searchDevice.hw_id = device[:hw_id]
+      searchDevice.save!
+
+      deviceMapping = DeviceMapping.new
+      deviceMapping.device = searchDevice
+      deviceMapping.user_id = session.user_id
+      deviceMapping.site_id = session.site_id
+      deviceMapping.customer_id = session.customer_id
+      deviceMapping.save!
+    else
+      #Must exists
+      deviceMapping = DeviceMapping.find_by(device_id: device[:id], user_id: session.user_id, site_id: session.site_id,customer_id: session.customer_id)
+    end
 
     if deviceMapping.nil?
       error! :not_acceptable, :metadata => {:message => 'Device Mapping no found'}
@@ -93,11 +108,11 @@ class Rest::DeviceController < Rest::ServiceController
         propertySearch.save!
       end
 
-      device = Device.find device[:id]
-
       deviceProperty = DeviceProperty.new
       deviceProperty.device_mapping = deviceMapping
       deviceProperty.property = propertySearch
+      deviceProperty.dismiss_duration = property[:dismiss_duration]
+      deviceProperty.dismiss_time = property[:dismiss_time]
       deviceProperty.value = property[:value]
       deviceProperty.save!
     end

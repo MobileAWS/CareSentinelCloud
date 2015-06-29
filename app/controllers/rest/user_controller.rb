@@ -7,8 +7,8 @@ class Rest::UserController < Rest::SecureController
   def register (skipValidation = true)
     return if !checkRequiredParams(:email,:password,:confirm_password);
 
-    role = Role.find_by(id: params[:role_id])
-    # role = Role.find params[:role_id]
+    #The clients only can see the role id. "caregiver"
+    role = Role.find_by(role_id: params[:role_id])
     if !role.nil? && role.role_id == Role::CAREGIVER_ADMIN_ROLE_ID && params[:customersUser].empty?
       expose :message=>'Customer ID must be provided', :error=>true
       return
@@ -18,7 +18,7 @@ class Rest::UserController < Rest::SecureController
     newUser.email = params[:email]
     newUser.password = params[:password]
     newUser.password_confirmation = params[:confirm_password]
-    newUser.role_id = params[:role_id] unless params[:role_id].nil?
+    newUser.role_id = role.id
 
     siteIds = params[:sitesUser].split(",")
     siteIds.each do |id|
@@ -28,7 +28,7 @@ class Rest::UserController < Rest::SecureController
 
     customersIDs = params[:customersUser].split(",")
     customersIDs.each do |id|
-      customerSearch = Customer.find_by(id: id)
+      customerSearch = Customer.find_by(customer_id: id)
       if customerSearch.nil?
         customerSearch = Customer.new
         customerSearch.customer_id = id
