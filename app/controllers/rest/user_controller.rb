@@ -20,22 +20,26 @@ class Rest::UserController < Rest::SecureController
     newUser.password_confirmation = params[:confirm_password]
     newUser.role_id = role.id
 
-    siteIds = params[:sitesUser].split(",")
-    siteIds.each do |id|
-      site = Site.find id
-      newUser.sites << site
+    if !params[:sitesUser].nil?
+      siteIds = params[:sitesUser].split(",")
+      siteIds.each do |id|
+        site = Site.find id
+        newUser.sites << site
+      end
     end
 
-    customersIDs = params[:customersUser].split(",")
-    customersIDs.each do |id|
-      customerSearch = Customer.find_by(customer_id: id)
-      if customerSearch.nil?
-        customerSearch = Customer.new
-        customerSearch.customer_id = id
-        customerSearch.save!
-      end
+    if !params[:customersUser].nil?
+      customersIDs = params[:customersUser].split(",")
+      customersIDs.each do |id|
+        customerSearch = Customer.find_by(customer_id: id)
+        if customerSearch.nil?
+          customerSearch = Customer.new
+          customerSearch.customer_id = id
+          customerSearch.save!
+        end
 
-      newUser.customers << customerSearch
+        newUser.customers << customerSearch
+      end
     end
 
     newUser.skip_confirmation! if skipValidation
