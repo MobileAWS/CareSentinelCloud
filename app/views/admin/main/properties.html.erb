@@ -1,5 +1,6 @@
 <% @availableActions = [:add,:details] if @availableActions.nil? %>
 <div class="pageheader">
   <h2><i class="fa fa-home"></i>Properties</h2>
+  <div role="contentFor" data-contentfor="headerTitle">Properties</div>
 </div>
 <%= render 'general/entity_grid' %>

@@ -53,6 +53,41 @@ class AuthenticationController < Rest::ServiceController
     expose :token => token, :role => getCurrentRole.role_id
   end
 
+  def create
+    return if !checkRequiredParams(:email, :password, :site_name, :customer_id);
+
+    user = User.not_deleted.find_for_database_authentication(:email => params[:email])
+    if user.nil? then
+      expose :message=>'User or password incorrect for this site', :error=>true
+      return;
+    end
+
+    customerSearch = Customer.find_by(customer_id: params[:customer_id])
+
+    if customerSearch.nil?
+      customerSearch = Customer.new
+      customerSearch.customer_id = params[:customer_id]
+      customerSearch.save!
+
+      user.customers << customerSearch
+      user.save!
+    end
+
+    siteSearch = Site.find_by_name params[:site_name]
+
+    if siteSearch.nil?
+      siteSearch = Site.new
+      siteSearch.name = params[:site_name]
+      siteSearch.save!
+
+      user.sites << siteSearch
+      user.save!
+    end
+
+    #DRY
+    self.new
+  end
+
   def logout
     if params[:token].nil? then
       expose :message=>"No session specified", :error=>true

@@ -1,5 +1,5 @@
 <% @availableActions = [:edit,:delete,:details] if @availableActions.nil? %>
 <div class="pageheader">
-  <h2><i class="fa fa-home"></i>Sites Admin</h2>
+  <div role="contentFor" data-contentfor="headerTitle">Sites Admin</div>
 </div>
 <%= render 'general/entity_grid' %>

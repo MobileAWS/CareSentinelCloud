@@ -1,4 +1,8 @@
 /** Generic components  */
+.navbarloon{
+  width: 330px;
+}
+
 .loading-panel{
     background: image_url("loading-bar.gif") center no-repeat #ffffff !important;
     width: 100%;
@@ -89,8 +93,13 @@
   src: url(asset_path('/assets/glyphicons-halflings-regular.eot')+'?#iefix') format('embedded-opentype'), asset_url('glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url(asset_path('/assets/glyphicons-halflings-regular.svg')+'#glyphicons_halflingsregular') format('svg');
 }
 
+.menuicon{
+  margin-right: 10px;
+}
+
 .body-content{
   position: relative;
+  padding-top: 5px;
 }
 
 .form-signin {
@@ -130,7 +139,6 @@
   background: image_url("logo-toolbar.png")  no-repeat center center rgba(0,0,0,0);
   background-size: 177px 32px;
   width: 205px;
-  margin-left: -20px;
 }
 
 .main-navbar .navbar-toggle{
@@ -162,7 +170,8 @@
 
 .headerbar {
   background: #62c1e4;
-  margin-left: 16.67%;
+  padding-top: 5px;
+  margin-left: 330px;
 }
 
 .headerbar::after {
@@ -174,7 +183,14 @@
 .headermenu{
   list-style-type: none;
   margin-right: 10px;
+}
+
+.headerTitle{
+  font-size: 25px;
+  color: white;
+  margin-left: 15px;
   margin-top: 5px;
+  font-weight: bold;
 }
 
 .main-navbar .navbar-nav a:hover{

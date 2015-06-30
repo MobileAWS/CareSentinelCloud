@@ -11,32 +11,35 @@
 </script>
 
 
-<div id="leftMenu" class="col-sm-2 navbar main-navbar navbar-fixed-top total-height">
+<div class="navbarloon navbar main-navbar navbar-fixed-top total-height" style="width: 330px;">
   <div class="logopanel">
     <div class="navbar-brand"></div>
   </div>
   <div class="leftpanelinner">
-    <div class="row boxy">
       <div class="col-md-13">
         <ul class="nav navbar-nav navbar-left">
-          <li><a href="#" role="entityLink" data-entity="user">Users</a></li>
-          <li><a href="#" role="entityLink" data-entity="site">Sites</a></li>
-          <li><a href="#" role="entityLink" data-entity="customer">Customer</a></li>
-          <li><a href="#" role="entityLink" data-entity="setting">Settings</a></li>
+          <li><a href="#" role="entityLink" data-entity="user"><span class="menuicon glyphicon glyphicon-user" aria-hidden="true"></span>Users</a></li>
+          <li><a href="#" role="entityLink" data-entity="site"><span class="menuicon glyphicon glyphicon-th" aria-hidden="true"></span>Sites</a></li>
+          <li><a href="#" role="entityLink" data-entity="customer"><span class="menuicon glyphicon glyphicon-th-large" aria-hidden="true"></span>Customer</a></li>
+          <li><a href="#" role="entityLink" data-entity="setting"><span class="menuicon glyphicon glyphicon-cog" aria-hidden="true"></span>Settings</a></li>
         </ul>
       </div>
-    </div>
   </div><!-- leftpanelinner -->
 </div><!-- leftpanel -->
+
 <div class="headerbar">
   <ul class="headermenu pull-right">
     <li>
       <div class="btn-group">
-        <a href="<%= url_for :controller => 'authentication', :action =>  'logout'%>" class="navbar-link logout-button responsive-icon-button">Logout</a>
+        <a class="btn btn-primary" href="<%= url_for :controller => 'authentication', :action =>  'logout'%>" class="navbar-link logout-button responsive-icon-button">Logout</a>
       </div>
     </li>
   </ul>
+  <div id="headerTitle" role="contentIn" class="headerTitle">
+  </div>
 </div><!-- headerbar -->
+
+
 <div class="col-sm-10" style="margin-left: 16.67%;">
   <div class="container-fluid body-content">
   </div>
