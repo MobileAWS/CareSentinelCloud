@@ -1,6 +1,10 @@
 /** Generic components  */
 .navbarloon{
-  width: 330px;
+  width: 250px;
+}
+
+.contentloon{
+  margin-left: 255px;
 }
 
 .loading-panel{
@@ -171,7 +175,7 @@
 .headerbar {
   background: #62c1e4;
   padding-top: 5px;
-  margin-left: 330px;
+  margin-left: 250px;
 }
 
 .headerbar::after {
@@ -219,16 +223,6 @@ ul.nav {
 
 .dataTables_length{
   margin-bottom: 10px;
-}
-
-.logout-button{
-  background: image_url("logout.png")  no-repeat left center;
-  height: 50px;
-  min-width: 100px;
-  font-size: 18px;
-  padding-left: 38px !important;
-  margin-right: 5px;
-  color: white;
 }
 
 .entity-grid .selected td{
