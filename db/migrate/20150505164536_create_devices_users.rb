@@ -14,8 +14,6 @@ class CreateDevicesUsers < ActiveRecord::Migration
       t.belongs_to :device_mapping
       t.belongs_to :property
       t.string :value, null: false
-      t.timestamp :dismiss_time
-      t.timestamp :dismiss_duration
       t.timestamps
     end
 
