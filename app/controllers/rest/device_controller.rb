@@ -90,6 +90,15 @@ class Rest::DeviceController < Rest::ServiceController
     else
       #Must exists
       deviceMapping = DeviceMapping.find_by(device_id: searchDevice.id, user_id: session.user_id, site_id: session.site_id,customer_id: session.customer_id)
+
+      if deviceMapping.nil?
+        deviceMapping = DeviceMapping.new
+        deviceMapping.device = searchDevice
+        deviceMapping.user_id = session.user_id
+        deviceMapping.site_id = session.site_id
+        deviceMapping.customer_id = session.customer_id
+        deviceMapping.save!
+      end
     end
 
     if deviceMapping.nil?
