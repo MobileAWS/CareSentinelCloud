@@ -56,7 +56,8 @@ class AuthenticationController < Rest::ServiceController
   def create
     return if !checkRequiredParams(:email, :password, :site_name, :customer_id);
 
-    user = User.not_deleted.find_for_database_authentication(:email => params[:email])
+    user = User.includes(:customers,:sites).not_deleted.find_for_database_authentication(:email => params[:email])
+
     if user.nil? then
       expose :message=>'User or password incorrect for this site', :error=>true
       return;
@@ -64,13 +65,20 @@ class AuthenticationController < Rest::ServiceController
 
     customerSearch = Customer.find_by(customer_id: params[:customer_id])
 
+    save_user = false;
+
     if customerSearch.nil?
       customerSearch = Customer.new
       customerSearch.customer_id = params[:customer_id]
       customerSearch.save!
-
       user.customers << customerSearch
-      user.save!
+      save_user = true;
+    else
+      idx = user.customers.index{|customer|  customer.id == customerSearch.id}
+      if idx.nil?
+        user.customers << customerSearch if idx.nil?
+        save_user = true
+      end
     end
 
     siteSearch = Site.find_by_name params[:site_name]
@@ -79,13 +87,21 @@ class AuthenticationController < Rest::ServiceController
       siteSearch = Site.new
       siteSearch.name = params[:site_name]
       siteSearch.save!
-
       user.sites << siteSearch
-      user.save!
+      save_user = true
+    else
+      idx = user.sites.index{|site|  site.id == siteSearch.id}
+      if idx.nil?
+        user.sites << siteSearch
+        save_user = true
+      end
     end
 
-    #DRY
+    # Save changes on the user once.
+    user.save! if save_user
+
     self.new
+
   end
 
   def logout
