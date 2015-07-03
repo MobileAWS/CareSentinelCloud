@@ -10,7 +10,7 @@ class Rest::UserController < Rest::SecureController
     user = User.find_by_email params[:email]
 
     if !user.nil?
-      expose :message=>'Email already exists', :error=>true
+      expose :message=>'User already exists, try login in', :error=>true
       return
     end
 
@@ -23,11 +23,6 @@ class Rest::UserController < Rest::SecureController
 
     if params[:password].length < 8
       expose :message=>'Password must be at least 8 characters long', :error=>true
-      return
-    end
-    tmpUser = User.find_by_email(params[:email])
-    if !tmpUser.nil?
-      expose :message=>'User already exists, try login in', :error=>true
       return
     end
 

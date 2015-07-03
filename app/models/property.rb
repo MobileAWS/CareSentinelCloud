@@ -4,7 +4,7 @@ class Property < ActiveRecord::Base
 
   belongs_to :device_mapping
 
-  @@gridColumns = {:id => "Id", :key => "Property Name", :metric => "Metric", :value => "Value", :device_name => "Device Name", :created_at => "Created At"}
+  @@gridColumns = {:id => "Id", :key => "Property Name", :metric => "Metric", :value => "Value", :device_name => "Device Name", :created_at => "Created At", :dismiss_time => "Dismiss Time"}
 
   def self.gridColumns
     @@gridColumns

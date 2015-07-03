@@ -4,10 +4,10 @@ class Rest::PropertyController < Rest::ServiceController
 
   def list
     if getCurrentUser.isAdmin?
-      propertiesList = Property.all.select("properties.id", "properties.key", "properties.metric", "'N/A' as value", :created_at)
+      propertiesList = Property.all.select("properties.id", "properties.key", "properties.metric", "'N/A' as value", :created_at, :dismiss_time)
     else
-      propertiesList = params[:filter].nil? || params[:filter].empty? ? DeviceProperty.joins(:device_mapping, :property).joins(:device_mapping).where(device_mappings: {site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("device_mappings.device_name", "properties.id", "properties.key", "properties.metric", :value, :created_at) :
-          DeviceProperty.joins(:device_mapping, :property).joins(:device_mapping).where(device_mappings: {id: params[:filter], site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("device_mappings.device_name", "properties.id", "properties.key", "properties.metric", :value, :created_at)
+      propertiesList = params[:filter].nil? || params[:filter].empty? ? DeviceProperty.joins(:device_mapping, :property).joins(:device_mapping).where(device_mappings: {site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("device_mappings.device_name", "properties.id", "properties.key", "properties.metric", :value, :created_at, :dismiss_time) :
+          DeviceProperty.joins(:device_mapping, :property).joins(:device_mapping).where(device_mappings: {id: params[:filter], site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("device_mappings.device_name", "properties.id", "properties.key", "properties.metric", :value, :created_at, :dismiss_time)
     end
 
     if !propertiesList.nil?
