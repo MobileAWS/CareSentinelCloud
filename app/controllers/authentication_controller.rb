@@ -81,11 +81,11 @@ class AuthenticationController < Rest::ServiceController
       end
     end
 
-    siteSearch = Site.find_by_name params[:site_name]
+    siteSearch = Site.find_site_by_name params[:site_name]
 
     if siteSearch.nil?
       siteSearch = Site.new
-      siteSearch.name = params[:site_name]
+      siteSearch.name = params[:site_name].upcase
       siteSearch.save!
       user.sites << siteSearch
       save_user = true

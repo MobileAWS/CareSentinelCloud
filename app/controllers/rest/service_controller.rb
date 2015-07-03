@@ -1,6 +1,6 @@
 class Rest::ServiceController < RocketPants::Base
 
-  around_action :set_timezone,:set_chronic_zone
+  #around_action :set_timezone,:set_chronic_zone
 
   def set_timezone(&block)
     # Later we can use the timezone of the user

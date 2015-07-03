@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150626052936) do
+ActiveRecord::Schema.define(version: 20150702210333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,10 +43,10 @@ ActiveRecord::Schema.define(version: 20150626052936) do
     t.integer  "device_mapping_id"
     t.integer  "property_id"
     t.string   "value",             null: false
-    t.datetime "dismiss_time"
-    t.datetime "dismiss_duration"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "dismiss_time"
+    t.datetime "dismiss_duration"
   end
 
   create_table "devices", force: true do |t|

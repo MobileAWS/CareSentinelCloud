@@ -121,7 +121,9 @@ class Rest::DeviceController < Rest::ServiceController
       deviceProperty.device_mapping = deviceMapping
       deviceProperty.property = propertySearch
       deviceProperty.dismiss_duration = property[:dismiss_duration]
-      deviceProperty.dismiss_time = property[:dismiss_time]
+      deviceProperty.dismiss_time = property[:dismiss_time].to_i if !property[:dismiss_time].nil?
+      deviceProperty.created_at = property[:created_at].to_i if !property[:created_at].nil?
+      deviceProperty.updated_at = property[:created_at].to_i if !property[:created_at].nil?
       deviceProperty.value = property[:value]
       deviceProperty.save!
     end
