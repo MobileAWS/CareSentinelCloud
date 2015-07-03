@@ -27,18 +27,18 @@ class NavigateController < ApplicationController
 
   def view
     @site = getCurrentSite
-    render getRoleId+"/main/#{params[:entityName].pluralize}", :layout => false
+    render getRoleId+"/main/#{params[:entityName].pluralize.downcase}", :layout => false
   end
 
   def add_edit
     @customer = getCurrentCustomer
     entity_from_parameters
-    render getRoleId+"/add_edit/#{params[:entityName].pluralize}", :layout => false
+    render getRoleId+"/add_edit/#{params[:entityName].pluralize.downcase}", :layout => false
   end
 
   def details
     entity_from_parameters
-    render getRoleId+"/details/#{params[:entityName].pluralize}", :layout => false
+    render getRoleId+"/details/#{params[:entityName].pluralize.downcase}", :layout => false
   end
 
   def entity_from_parameters

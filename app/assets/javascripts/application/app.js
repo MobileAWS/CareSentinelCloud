@@ -85,6 +85,8 @@ App.loadEntityView = function(data){
         $(".entity-buttons-section .selection-dependent").addClass("disabled");
     });
 
+    var url = entityGrid.size() > 0 ? entityGrid.data("entity").toLowerCase() : '';
+
     entityGrid.dataTable({
         "processing": true,
         "serverSide": true,
@@ -97,7 +99,10 @@ App.loadEntityView = function(data){
             "search": ""
         },
         "ajax":{
-            "url": "/"+entityGrid.data("entity")+"/list",
+            "url": "/"+url+"/list",
+            "data": function(d){
+                d.filter = $("[role='entityLink'][data-entity='"+entityGrid.data("entity")+"']").data("filter");
+            },
             "dataSrc": "response"
         },
         "columns": columns
@@ -108,12 +113,16 @@ App.loadEntityView = function(data){
         App.selectRow(this);
     });
 
-
     var buttonsSection = $(".entity-buttons-section");
-    buttonsSection.find(".add").click(App.showAddView)
-    buttonsSection.find(".edit").click(App.showEditView)
-    buttonsSection.find(".details").click(App.showDetailsView)
-    buttonsSection.find(".delete").click(App.deleteRecord)
+    buttonsSection.find(".add").click(App.showAddView);
+    buttonsSection.find(".edit").click(App.showEditView);
+    buttonsSection.find(".details").click(App.showDetailsView);
+    buttonsSection.find(".delete").click(App.deleteRecord);
+
+    if($("[role='entityLink'][data-entity='"+entityGrid.data("entity")+"']").data("title")){
+        buttonsSection.data("entityDisplay", $("[role='entityLink'][data-entity='"+entityGrid.data("entity")+"']").data("title"));
+    }
+
     if(searchable){
         var searchControl = $(".dataTables_filter").find("[type='search']");
         searchControl.unbind("keyup.DT input.DT keypress.DT");
@@ -148,6 +157,8 @@ App.loadEntityView = function(data){
     })
 
     AppBase.hideDialog(AppBase.loadingDialog);
+
+    $("[role='entityLink'][data-entity='"+entityGrid.data("entity")+"']").data("filter", "");
 }
 
 App.selectRow = function(row){
@@ -195,10 +206,10 @@ App.saveEntity = function(){
     AppBase.showInputDialogLoading("Saving");
     var idElement = form.find("[role='entity-id']");
     if(idElement.length == 0) {
-        form.attr("action", "/" + form.data("entity") + "/create");
+        form.attr("action", "/" + form.data("entity").toLowerCase() + "/create");
     }
     else{
-        form.attr("action", "/" + form.data("entity") + "/update");
+        form.attr("action", "/" + form.data("entity").toLowerCase() + "/update");
     }
     AppBase.submitRestService(form,App.entitySaved);
 }
@@ -256,7 +267,7 @@ App.deleteEntity = function(){
     var buttonsSection = $(".entity-buttons-section");
     AppBase.hideDialog(AppBase.confirmDialog);
     AppBase.showLoadingDialog("Deleting");
-    var entity = buttonsSection.data("entity");
+    var entity = buttonsSection.data("entity").toLowerCase();
     var data = new Object();
     data[entity+"_id"] = App.getSelectedRowId();
     AppBase.callRestService("/" + entity + "/delete",data,"POST",App.deleteSuccess,App.deleteFailed);

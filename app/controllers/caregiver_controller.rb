@@ -19,7 +19,7 @@ class CaregiverController < ApplicationController
   end
 
   def export_historic_report
-    @properties = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {device_id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}, property_id: params[:property_id]).order("device_properties.created_at ASC")
+    @properties = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}, property_id: params[:property_id]).order("device_properties.created_at ASC")
 
     headers['Content-Disposition'] = "attachment; filename=\"historic_report#{Time.now.strftime("_%d_%m_%Y%H%M")}.csv\""
     headers['Content-Type'] ||= 'text/csv'
@@ -28,7 +28,7 @@ class CaregiverController < ApplicationController
   end
 
   def export_average_report
-    @properties = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {device_id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}).select(:key, "avg(device_properties.value::int) as average").group(:key)
+    @properties = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}).select(:value, "count(device_properties.value) as count").group(:value)
 
     headers['Content-Disposition'] = "attachment; filename=\"average#{Time.now.strftime("_%d_%m_%Y%H%M")}.csv\""
     headers['Content-Type'] ||= 'text/csv'

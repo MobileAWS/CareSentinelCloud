@@ -6,8 +6,6 @@ var chart = null;
 var chartType = null;
 
 $(document).ready(function(){
-    console.log("Load");
-
    $("#historicReportButton").click(function(){
        if($("#device_id").val() && $("#propertiesSelect").val()){
            chartType = LINE_CHART;
@@ -29,7 +27,7 @@ $(document).ready(function(){
 
 function deviceSelect(deviceId){
     if(deviceId){
-        AppBase.doRequest("/device/properties_suggestions?device_id="+deviceId, null, 'get', onPropertiesLoaded, null, 'json');
+        AppBase.doRequest("/devicemapping/properties_suggestions?device_id="+deviceId, null, 'get', onPropertiesLoaded, null, 'json');
     }
 }
 
@@ -95,4 +93,10 @@ function averageExportHref(deviceId){
     }
 
     $("#linkExportAverage").attr('href', href+'&device_id='+deviceId);
+}
+
+function deviceNameSelected(deviceId, entity){
+    console.log("test");
+    $("[role='entityLink'][data-entity='"+entity+"']").data("filter", deviceId);
+    $("[role='entityLink'][data-entity='"+entity+"']").click();
 }

@@ -1,0 +1,24 @@
+<div id="errorAlert" class="alert alert-danger" style="display: none;"><a href="#" class="close" onclick="$('#errorAlert').hide();">&times;</a><div id="errorAlertMsg"></div></div>
+<form class="entity-input-form" data-entity="<%= params[:entityName]%>" role="form">
+    <input type="hidden" name="skip_confirm" value="true" />
+    <% if !@targetEntity.id.nil? then %>
+            <input type="hidden" name="device_id" role="entity-id" required="true" value="<%= @targetEntity.id %>"/>
+           <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required="true" value="<%= @targetEntity.device_name %>"/>
+          </div>
+          <div class="form-group">
+            <label for="hw_id">Hardware ID</label>
+            <input type="text" class="form-control" required="true" disabled value="<%= @targetEntity.device.hw_id%>"/>
+          </div>
+    <% else %>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <%= render "general/components/autocomplete", :targetValue => @targetEntity.id, :targetLabel => @targetEntity.device_name, :service => '/device/suggestions_hw', :prefix_id => 'device', :placeholder => 'Device Name', :required => true, :onSelect => 'addEditDeviceSelect' %>
+      </div>
+      <div class="form-group">
+        <label for="hw_id">Hardware ID</label>
+        <input type="text" class="form-control" id="hw_id" name="hw_id" required="true"/>
+      </div>
+    <% end %>
+</form>

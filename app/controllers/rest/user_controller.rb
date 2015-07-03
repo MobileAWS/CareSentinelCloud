@@ -7,6 +7,13 @@ class Rest::UserController < Rest::SecureController
   def register (skipValidation = true)
     return if !checkRequiredParams(:email,:password,:confirm_password);
 
+    user = User.find_by_email params[:email]
+
+    if !user.nil?
+      expose :message=>'Email already exists', :error=>true
+      return
+    end
+
     #The clients only can see the role id. "caregiver"
     role = Role.find_by(role_id: params[:role_id])
     if !role.nil? && role.role_id == Role::CAREGIVER_ADMIN_ROLE_ID && params[:customersUser].empty?
@@ -71,9 +78,11 @@ class Rest::UserController < Rest::SecureController
       error! :invalid_resource, :metadata => {:message => 'User not found'}
     end
 
+    role = Role.find_by(role_id: params[:role_id])
+
     tmpUser.email = params[:email] if (!params[:email].nil?)
     tmpUser.phone = params[:phone] if (!params[:phone].nil?)
-    tmpUser.role_id = params[:role_id] unless params[:role_id].nil?
+    tmpUser.role_id = role.id if !role.nil?
     tmpUser.save!
 
     expose 'done'
@@ -102,14 +111,18 @@ class Rest::UserController < Rest::SecureController
   def delete
     return if !checkRequiredParams(:user_id);
 
-    tmpUser = User.find(params[:user_id])
-    if tmpUser.nil?
-      error! :invalid_resource, :metadata => {:message => 'User not found'}
-    end
-    tmpUser.deleted = true
-    tmpUser.save!
+    ActiveRecord::Base.transaction do
+      tmpUser = User.find(params[:user_id])
+      if tmpUser.nil?
+        error! :invalid_resource, :metadata => {:message => 'User not found'}
+      end
+      tmpUser.customers.delete_all
+      tmpUser.sites.delete_all
+      tmpUser.deleted = true
+      tmpUser.save!
 
-    expose 'done'
+      expose 'done'
+    end
   end
 
   def profile

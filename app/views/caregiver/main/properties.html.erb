@@ -1,5 +1,16 @@
+<%= javascript_include_tag "application/property/list" %>
 <% @availableActions = [:add,:details] if @availableActions.nil? %>
 <div class="pageheader">
   <div role="contentFor" data-contentfor="headerTitle">Properties</div>
 </div>
+<div class="form-group">
+  <label>Device Name</label><br/>
+  <div class="col-lg-4">
+    <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/devicemapping/suggestions', :prefix_id => 'device', :placeholder => 'All' %>
+  </div>
+  <div class="col-lg-1">
+    <input type="button" class="btn btn-primary" onclick="deviceSelected();" value="Filter">
+  </div>
+</div>
+<br/><br/>
 <%= render 'general/entity_grid' %>

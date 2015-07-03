@@ -152,7 +152,7 @@ AppBase.initializeData = function(){
                 var target =  $(this).data("target");
                 $("#"+target).val(suggestion.data);
                 if($(this).data("onselect")){
-                    eval($(this).data("onselect")+"("+suggestion.data+")");
+                    eval($(this).data("onselect")+"('"+suggestion.data+"')");
                 }
             }
         });
@@ -223,6 +223,26 @@ AppBase.actionRender = function(data, type, full, meta){
     return AppBase.processActionRender(data, meta.col, false);
 }
 
+AppBase.javaScriptRender = function(data, type, full, meta){
+    if((data == null || data == "") && data !== false){
+        return "";
+    }
+
+    var col = meta.col;
+
+    var template = $("#colActionHtmlTemplate"+col).val();
+    var action = $("#colAction"+col).val();
+    var entity = $("#colActionTitle"+col).val();
+
+    if(action && template){
+        action = action.replace('{id}', full.id).replace('{entity}', entity);
+        var elementTemplate = template.replace('{action}', action).replace('{data}', data);
+        return elementTemplate;
+    }
+
+    return data;
+}
+
 AppBase.processActionRender = function(data, col, isModal){
     var template = $("#colActionHtmlTemplate"+col).val();
     var action = $("#colAction"+col).val();
@@ -240,6 +260,8 @@ AppBase.processActionRender = function(data, col, isModal){
 
     return data;
 }
+
+
 
 AppBase.phoneRenderer = function(data){
     if(data == null || data == ""){

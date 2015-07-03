@@ -7,4 +7,31 @@ class DeviceMapping < ActiveRecord::Base
   belongs_to :user
   belongs_to :customer
 
+
+  @@gridColumns = {:id => "Id", :device_name => "Device Name", :hw_id => "Hardware ID", :created_at => "Create Date"}
+
+  @@colActions = {:device_name =>
+                      {:index => 1, :action => "deviceNameSelected({id}, '{entity}');", :action_title => 'property', :html_template => '<a href="#" onclick="{action}">{data}</a>'}
+  }
+
+  @@gridRenderers = {:device_name => 'javaScriptRender', :enable => 'actionRender'}
+
+  @@columnOrder = {:created_at => "desc"}
+
+  def self.gridRenderers
+    @@gridRenderers
+  end
+
+  def self.columnOrder
+    @@columnOrder
+  end
+
+  def self.colActions
+    @@colActions
+  end
+
+  def self.gridColumns
+    @@gridColumns
+  end
+
 end

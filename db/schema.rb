@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20150702210333) do
     t.boolean  "enable",      default: true, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "device_name",                null: false
   end
 
   add_index "device_mappings", ["device_id", "site_id", "user_id", "customer_id"], name: "unique_device_mapping", unique: true, using: :btree

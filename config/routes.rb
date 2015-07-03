@@ -58,10 +58,10 @@ Rails.application.routes.draw do
 
   resources :property do
     collection do
-      get 'list' => 'rest/device#properties_list'
-      post 'create' => 'rest/device#create_property'
-      post 'update' => 'rest/device#update'
-      post 'delete' => 'rest/device#delete'
+      get 'list' => 'rest/property#list'
+      post 'create' => 'rest/property#create'
+      post 'update' => 'rest/property#update'
+      post 'delete' => 'rest/property#delete'
     end
   end
 
@@ -75,14 +75,24 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :devicemapping do
+    collection do
+      get 'list' => 'rest/device_mapping#list'
+      post 'create' => 'rest/device_mapping#create'
+      post 'update' => 'rest/device_mapping#update'
+      post 'delete' => 'rest/device_mapping#delete'
+      get 'suggestions' => 'rest/device_mapping#suggestions'
+      get 'properties_suggestions' => 'rest/device_mapping#properties_suggestions'
+    end
+  end
+
   resources :device do
     collection do
-      get 'list' => 'rest/device#list'
       post 'create' => 'rest/device#create'
       post 'update' => 'rest/device#update'
       post 'delete' => 'rest/device#delete'
       get 'suggestions' => 'rest/device#suggestions'
-      get 'properties_suggestions' => 'rest/device#properties_suggestions'
+      get 'suggestions_hw' => 'rest/device#suggestions_hw'
       post 'createdevices' => 'rest/device#createDevices'
       post 'editdevices' => 'rest/device#editDevices'
       post 'addproperties' => 'rest/device#addProperties'
