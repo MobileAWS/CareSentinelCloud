@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150702210333) do
+ActiveRecord::Schema.define(version: 20150703202128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20150702210333) do
     t.boolean  "enable",      default: true, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "device_name",                null: false
+    t.string   "device_name", default: "",   null: false
   end
 
   add_index "device_mappings", ["device_id", "site_id", "user_id", "customer_id"], name: "unique_device_mapping", unique: true, using: :btree
