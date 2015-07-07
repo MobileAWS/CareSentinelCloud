@@ -14,7 +14,7 @@ class DeviceMapping < ActiveRecord::Base
                       {:index => 1, :action => "deviceNameSelected({id}, '{entity}');", :action_title => 'property', :html_template => '<a href="#" onclick="{action}">{data}</a>'}
   }
 
-  @@gridRenderers = {:device_name => 'javaScriptRender', :enable => 'actionRender'}
+  @@gridRenderers = {:device_name => 'javaScriptRender', :enable => 'actionRender', :created_at => "dateRenderer"}
 
   @@columnOrder = {:created_at => "desc"}
 

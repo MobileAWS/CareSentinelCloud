@@ -6,11 +6,13 @@ class Rest::PropertyController < Rest::ServiceController
     if getCurrentUser.isAdmin?
       propertiesList = Property.all.select("properties.id", "properties.key", "properties.metric", "'N/A' as value", :created_at, :dismiss_time)
     else
-      propertiesList = params[:filter].nil? || params[:filter].empty? ? DeviceProperty.joins(:device_mapping, :property).joins(:device_mapping).where(device_mappings: {site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("device_mappings.device_name", "properties.id", "properties.key", "properties.metric", :value, :created_at, :dismiss_time) :
-          DeviceProperty.joins(:device_mapping, :property).joins(:device_mapping).where(device_mappings: {id: params[:filter], site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("device_mappings.device_name", "properties.id", "properties.key", "properties.metric", :value, :created_at, :dismiss_time)
+      propertiesList = params[:filter].nil? || params[:filter].empty? ?
+          DeviceProperty.joins(:device_mapping, :property).joins(:device_mapping).where(device_mappings: {site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("device_mappings.device_name", "properties.id", "initcap(properties.key) as key", "properties.metric", :value, :created_at, :dismiss_time) :
+          DeviceProperty.joins(:device_mapping, :property).joins(:device_mapping).where(device_mappings: {id: params[:filter], site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id}).select("device_mappings.device_name", "properties.id", "initcap(properties.key) as key", "properties.metric", :value, :created_at, :dismiss_time)
     end
 
     if !propertiesList.nil?
+      propertiesList = propertiesList.order(:created_at => :desc)
       expose paginateObject(propertiesList)
     else
       expose ''
