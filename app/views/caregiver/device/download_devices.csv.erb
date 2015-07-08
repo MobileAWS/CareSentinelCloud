@@ -1,5 +1,5 @@
 <% headers = ['Device Name', 'Property Name', 'Property Value', 'Property Metric'] %>
-<%= CSV.generate_line(headers, col_sep: "|") %>
+<%= CSV.generate_line(headers, col_sep: ";") %>
 <% @properties.each do |p| %>
-<%= CSV.generate_line([p.device_mapping.device.name, p.property.key, p.value, p.property.metric], row_sep: "", col_sep: "|") %>
+<%= CSV.generate_line([p.device_mapping.device.name, p.property.key, p.value, p.property.metric], row_sep: "", col_sep: ";") %>
 <% end %>

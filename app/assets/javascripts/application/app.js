@@ -87,6 +87,10 @@ App.loadEntityView = function(data){
 
     var url = entityGrid.size() > 0 ? entityGrid.data("entity").toLowerCase() : '';
 
+    if(jQuery.isEmptyObject(order)){
+        order = [[0, "asc"]];
+    }
+
     entityGrid.dataTable({
         "processing": true,
         "serverSide": true,

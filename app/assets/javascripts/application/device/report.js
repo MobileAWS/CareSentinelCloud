@@ -7,23 +7,45 @@ var chartType = null;
 
 $(document).ready(function(){
    $("#historicReportButton").click(function(){
-       if($("#device_id").val() && $("#propertiesSelect").val()){
+       if($("#device_id").val() && $("#propertiesSelect").val() && checkDates()){
            chartType = LINE_CHART;
            historicExportHref($("#device_id").val(), $("#propertiesSelect").val());
-           AppBase.doRequest("/device/"+$("#device_id").val()+"/properties_report/"+$("#propertiesSelect").val()+"", null, 'post', onDataReportLoaded, null, 'json');
+           AppBase.doRequest("/device/"+$("#device_id").val()+"/properties_report/"+$("#propertiesSelect").val()+"", appendDates(), 'post', onDataReportLoaded, null, 'json');
        }
    });
 
    $("#averageReportButton").click(function(){
-        if($("#device_id").val()){
+        if($("#device_id").val() && checkDates()){
             chartType = BAR_CHART;
             averageExportHref($("#device_id").val());
-            AppBase.doRequest("/device/"+$("#device_id").val()+"/average_report", null, 'post', onDataReportLoaded, null, 'json');
+            AppBase.doRequest("/device/"+$("#device_id").val()+"/average_report", appendDates(), 'post', onDataReportLoaded, null, 'json');
         }
     });
 
     AppBase.initializeData();
 });
+
+function appendDates(){
+    data = new Object();
+    data["start_date"] = $('#start_date').val();
+    data["end_date"] = $('#end_date').val();
+
+    return data;
+}
+
+function checkDates(){
+    var isValid = true;
+
+    if(!$('#start_date').val()){
+        $('#start_date').focus();
+        isValid = false;
+    }else if(!$('#end_date').val()){
+        $('#end_date').focus();
+        isValid = false;
+    }
+
+    return isValid;
+}
 
 function deviceSelect(deviceId){
     if(deviceId){
@@ -62,7 +84,7 @@ function onDataReportLoaded(data){
 
         switch(chartType){
             case LINE_CHART:
-                chart = new Chart(ctx).Line(data.response,{animation: false});
+                chart = new Chart(ctx).Line(data.response,{animation: false, multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"});
                 break;
             case BAR_CHART:
                 chart = new Chart(ctx).Bar(data.response,{animation: false});

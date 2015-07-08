@@ -135,7 +135,7 @@ AppBase.showInputDialog = function(url,options){
 }
 
 AppBase.initializeData = function(){
-    $("[role='datetime-picker']").datetimepicker({autoclose: true});
+    $("[role='datetime-picker']").datetimepicker({keepOpen: 'false', format: 'YYYY-MM-DD'});
 
 
     $("[role='autocomplete']").each(function(index,element){
