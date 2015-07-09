@@ -11,7 +11,7 @@ class DeviceMapping < ActiveRecord::Base
   @@gridColumns = {:id => "Id", :device_name => "Device Name", :hw_id => "Hardware ID", :created_at => "Create Date"}
 
   @@colActions = {:device_name =>
-                      {:index => 1, :action => "deviceNameSelected({id}, '{entity}');", :action_title => 'property', :html_template => '<a href="#" onclick="{action}">{data}</a>'}
+                      {:index => 1, :action => "deviceNameSelected('{data}', {id}, '{entity}');", :action_title => 'property', :html_template => '<a href="#" onclick="{action}">{data}</a>'}
   }
 
   @@gridRenderers = {:device_name => 'javaScriptRender', :enable => 'actionRender', :created_at => "dateRenderer"}

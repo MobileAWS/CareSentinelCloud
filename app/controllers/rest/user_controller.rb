@@ -61,7 +61,7 @@ class Rest::UserController < Rest::SecureController
   end
 
   def create
-    self.register(true)
+    self.register(false)
   end
 
   # User update

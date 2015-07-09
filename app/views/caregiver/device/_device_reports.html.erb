@@ -2,13 +2,13 @@
   <label>Device Name</label>
 
   <div class="input-group col-lg-4">
-    <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/devicemapping/suggestions', :prefix_id => 'device', :placeholder => '', :onSelect => 'deviceSelect' %>
+    <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/devicemapping/suggestions', :prefix_id => 'device', :placeholder => 'Type to search device', :onSelect => 'deviceSelect' %>
   </div>
 </div>
 
 <div class="form-group input-group">
-  <div class="col-lg-4">
-    <label for="propertiesSelect">Property Name</label><br/>
+  <div class="col-lg-3 remove-padding-left">
+    <label for="propertiesSelect">Sensor Name</label><br/>
     <select class="dropdown" id="propertiesSelect" name="propertiesSelect">
       <option value="">Select a Device</option>
     </select>
@@ -17,12 +17,13 @@
     <label for="start_date">Start Date</label>
     <input type="text" id="start_date" name="start_date" role='datetime-picker' class="form-control">
   </div>
-  <div class="col-lg-3">
+  <div class="col-lg-3" style="padding-left: 5px !important;">
     <label for="end_date">End Date</label>
     <input type="text" id="end_date" name="end_date" role='datetime-picker' class="form-control">
   </div>
 </div>
 
+<div class="form-group">
 <button class="btn btn-primary" disabled id="historicReportButton" type="button" aria-expanded="false" aria-controls="historicReport">
   Historic Report
 </button>
@@ -30,6 +31,7 @@
 <button class="btn btn-primary" disabled id="averageReportButton" type="button" aria-expanded="false" aria-controls="averageReport">
   Average Report
 </button>
+</div>
 
 <div class="collapse" id="historicReport">
   <%= link_to "Export Historic Report", {controller: "caregiver", action: "export_historic_report", token: params[:token], format: "csv"}, class: "btn btn-primary", id: "linkExportHistoric" %>

@@ -8,12 +8,18 @@ class Property < ActiveRecord::Base
 
   @@gridRenderers = {:created_at => 'dateRenderer',:dismiss_time => 'dateRenderer'}
 
+  @@columnOrder = {:created_at => "desc"}
+
   def self.gridColumns
     @@gridColumns
   end
 
   def self.gridRenderers
     @@gridRenderers
+  end
+
+  def self.columnOrder
+    @@columnOrder
   end
 
 end

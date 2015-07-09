@@ -5,12 +5,13 @@
 #   gem 'sqlite3'
 #
 development:
-  adapter: postgresql
-  host: localhost
-  database: loonmedical_dev
-  pool: 5
-  username: postgres
-  password: pwd
+    adapter: postgresql
+    host: localhost
+    encoding: unicode
+    database: loonmedical_dev
+    pool: 5
+    username: postgres
+    password: Polaris2014*
 
 test:
     adapter: postgresql
@@ -18,7 +19,7 @@ test:
     database: loonmedical_test
     pool: 5
     username: postgres
-    password: pwd
+    password: Polaris2014*
 
 production:
       host: localhost
@@ -26,4 +27,4 @@ production:
       database: loonmedical_prod
       pool: 5
       username: postgres
-      password: pwd
+      password: Polaris2014*

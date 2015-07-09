@@ -12,7 +12,6 @@ class Rest::PropertyController < Rest::ServiceController
     end
 
     if !propertiesList.nil?
-      propertiesList = propertiesList.order(:created_at => :desc)
       expose paginateObject(propertiesList)
     else
       expose ''

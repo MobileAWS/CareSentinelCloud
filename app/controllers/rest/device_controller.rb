@@ -128,7 +128,7 @@ class Rest::DeviceController < Rest::ServiceController
         deviceProperty = DeviceProperty.new
         deviceProperty.device_mapping = deviceMapping
         deviceProperty.property = propertySearch
-        deviceProperty.dismiss_duration = property[:dismiss_duration]
+        deviceProperty.dismiss_duration = Time.at(property[:dismiss_duration].to_i) if !property[:dismiss_duration].nil? && !property[:dismiss_duration].empty?
         deviceProperty.dismiss_time = Time.at(property[:dismiss_time].to_i) if !property[:dismiss_time].nil? && !property[:dismiss_time].empty?
         deviceProperty.created_at = Time.at(property[:created_at].to_i).utc if !property[:created_at].nil? && !property[:created_at].empty?
         deviceProperty.updated_at = Time.at(property[:created_at].to_i).utc if !property[:created_at].nil? && !property[:created_at].empty?
@@ -197,14 +197,17 @@ class Rest::DeviceController < Rest::ServiceController
   end
 
   def average_report
-    return if !checkRequiredParams(:device_id, :start_date, :end_date);
+    return if !checkRequiredParams(:device_id, :property_id,:start_date, :end_date);
 
     start_date = DateTime.parse(params[:start_date])
     end_date = DateTime.parse(params[:end_date])
 
     days = (end_date - start_date).to_i
 
-    propertiesAverage = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}).select("lower(device_properties.value) value_name ", "count(device_properties.value) as count").group(:value_name)
+    start_date = start_date.beginning_of_day
+    end_date = end_date.end_of_day
+
+    propertiesAverage = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}, property_id: params[:property_id]).select("lower(device_properties.value) value_name ", "count(device_properties.value) as count").group(:value_name).where(created_at: (start_date)..end_date)
 
     dataResponse = {}
     labels = Array.new
@@ -212,7 +215,7 @@ class Rest::DeviceController < Rest::ServiceController
 
     propertiesAverage.each do |p|
       labels << p.value_name
-      propertyValues << p.count.to_i/days
+      propertyValues << (p.count.to_d/days).round(2)
     end
 
     datasets = Array.new

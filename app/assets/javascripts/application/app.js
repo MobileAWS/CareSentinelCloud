@@ -22,6 +22,7 @@ App.entityLinkClick = function(event){
                             },App.loadEntityView);
 }
 
+App.posLoadEntityView = null;
 
 App.loadEntityView = function(data){
 
@@ -123,10 +124,6 @@ App.loadEntityView = function(data){
     buttonsSection.find(".details").click(App.showDetailsView);
     buttonsSection.find(".delete").click(App.deleteRecord);
 
-    if($("[role='entityLink'][data-entity='"+entityGrid.data("entity")+"']").data("title")){
-        buttonsSection.data("entityDisplay", $("[role='entityLink'][data-entity='"+entityGrid.data("entity")+"']").data("title"));
-    }
-
     if(searchable){
         var searchControl = $(".dataTables_filter").find("[type='search']");
         searchControl.unbind("keyup.DT input.DT keypress.DT");
@@ -163,6 +160,11 @@ App.loadEntityView = function(data){
     AppBase.hideDialog(AppBase.loadingDialog);
 
     $("[role='entityLink'][data-entity='"+entityGrid.data("entity")+"']").data("filter", "");
+
+    if(App.posLoadEntityView){
+        eval(App.posLoadEntityView);
+        App.posLoadEntityView = null;
+    }
 }
 
 App.selectRow = function(row){
@@ -187,10 +189,16 @@ App.showAddEditView = function(id,title){
     data["entityName"] =  buttonsSection.data("entity");
     if(id) data["entityId"] = id;
 
+    if($("[role='entityLink'].active").data("title")){
+        title = $("[role='entityLink'].active").data("title");
+    }else{
+        title += " "+buttonsSection.data("entityDisplay");
+    }
+
     AppBase.showInputDialog("/"+user.role+"/add_edit",{
         data: data,
         okButton: "Save",
-        title: title+" "+buttonsSection.data("entityDisplay"),
+        title: title,
         success: App.saveEntity
     });
 }

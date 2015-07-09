@@ -15,10 +15,10 @@ $(document).ready(function(){
    });
 
    $("#averageReportButton").click(function(){
-        if($("#device_id").val() && checkDates()){
+        if($("#device_id").val() && $("#propertiesSelect").val() && checkDates()){
             chartType = BAR_CHART;
             averageExportHref($("#device_id").val());
-            AppBase.doRequest("/device/"+$("#device_id").val()+"/average_report", appendDates(), 'post', onDataReportLoaded, null, 'json');
+            AppBase.doRequest("/device/"+$("#device_id").val()+"/average_report/"+$("#propertiesSelect").val(), appendDates(), 'post', onDataReportLoaded, null, 'json');
         }
     });
 
@@ -58,7 +58,7 @@ function onPropertiesLoaded(data){
 
     if(data.response && data.count > 0){
         $(data.response).each(function(index, element){
-            propertyOptions += "<option value='"+element.property_id+"'>"+element.key+"</option>";
+            propertyOptions += "<option value='"+element.property_id+"'>"+ AppBase.capitalize(element.key)+"</option>";
         });
 
         $("#historicReportButton").attr('disabled', false);
@@ -117,8 +117,12 @@ function averageExportHref(deviceId){
     $("#linkExportAverage").attr('href', href+'&device_id='+deviceId);
 }
 
-function deviceNameSelected(deviceId, entity){
-    console.log("test");
+function deviceNameSelected(deviceName, deviceId, entity){
     $("[role='entityLink'][data-entity='"+entity+"']").data("filter", deviceId);
+    App.posLoadEntityView = "posLoadProperty('"+deviceName+"')";
     $("[role='entityLink'][data-entity='"+entity+"']").click();
+}
+
+function posLoadProperty(deviceName){
+    $('#deviceSelect').val(deviceName);
 }

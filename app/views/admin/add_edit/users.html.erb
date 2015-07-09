@@ -31,7 +31,7 @@
   <div class="form-group">
     <div id="successAlert" class="alert alert-success" style="display: none;"><a href="#" class="close" onclick="$('#successAlert').hide();">&times;</a><div id="successAlertMsg"></div></div>
     <div id="errorAlert" class="alert alert-danger" style="display: none;"><a href="#" class="close" onclick="$('#errorAlert').hide();">&times;</a><div id="errorAlertMsg"></div></div>
-    <div class="col-sm-6">
+    <div class="col-sm-6 remove-padding-left">
         <label>User Sites</label>
         <div class="input-group">
           <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/site/suggestions', :prefix_id => 'site', :placeholder => 'Site name' %>

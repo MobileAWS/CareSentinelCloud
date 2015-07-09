@@ -99,7 +99,7 @@ Rails.application.routes.draw do
       post  ':id/changestatus' => 'rest/device#change_status'
       post ':id/properties' => 'rest/device#properties'
       post ':device_id/properties_report/:property_id' => 'rest/device#properties_report'
-      post ':device_id/average_report' => 'rest/device#average_report'
+      post ':device_id/average_report/:property_id' => 'rest/device#average_report'
       get  ':id/properties' => 'caregiver#device_properties'
       get 'download' => 'caregiver#download_devices'
       get 'export_historic_report' => 'caregiver#export_historic_report'
