@@ -3,15 +3,15 @@ Rails.application.configure do
   config.emailAssetHost = 'http://localhost:3000'
 
   config.action_mailer.default_url_options = { :host => "localhost:3000"}
-  config.action_mailer.default_options = {from: 'admin@noserver.com' }
+  config.action_mailer.default_options = {from: 'CareSentinel<maws.loon.test@gmail.com>' }
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       address:              'smtp.gmail.com',
       port:                 587,
-      domain:               'noserver.com',
-      user_name:            'noreply@noserver.com',
-      password:             'password',
+      domain:               'gmail.com',
+      user_name:            'maws.loon.test@gmail.com',
+      password:             'g30rg14$',
       authentication:       'plain',
       enable_starttls_auto: true
   }

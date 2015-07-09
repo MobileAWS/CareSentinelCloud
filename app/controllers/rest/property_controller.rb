@@ -20,7 +20,7 @@ class Rest::PropertyController < Rest::ServiceController
 
   def create
     user = getCurrentUser
-    return if !user.isAdmin? && !checkRequiredParams(:property_name, :device_id, :metric, :value, :created_at);
+    return if !user.isAdmin? && !checkRequiredParams(:property_name, :property_device_id, :metric, :value, :created_at);
     return if user.isAdmin? && !checkRequiredParams(:property_name, :metric, :created_at);
 
     ActiveRecord::Base.transaction do
@@ -36,7 +36,7 @@ class Rest::PropertyController < Rest::ServiceController
 
       if !user.isAdmin?
         #Must exists
-        deviceMapping = DeviceMapping.find params[:device_id]
+        deviceMapping = DeviceMapping.find params[:property_device_id]
 
         if deviceMapping.nil?
           error! :not_acceptable, :metadata => {:message => 'Device Mapping not found'}
@@ -47,6 +47,7 @@ class Rest::PropertyController < Rest::ServiceController
         deviceProperty.property = propertySearch
         deviceProperty.value = params[:value]
         deviceProperty.created_at = Date.strptime(params[:created_at], '%m/%d/%Y %I:%M %p')
+        deviceProperty.dismiss_time = Date.strptime(params[:dismiss_time], '%m/%d/%Y %I:%M %p')
         deviceProperty.save!
       end
 
