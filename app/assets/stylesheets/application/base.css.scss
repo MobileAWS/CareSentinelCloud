@@ -28,6 +28,10 @@
   padding-left: 0px !important;
 }
 
+.remove-padding-right{
+  padding-right: 0px;
+}
+
 .loading-overlay .loading-message{
   position: relative;
   top: 40%;
@@ -114,6 +118,10 @@
   max-width: 370px;
   margin: 15% auto;
   border: 1px solid;
+}
+
+.select{
+  height: 34px;
 }
 
 .form-signin .form-control {
