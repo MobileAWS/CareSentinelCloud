@@ -42,12 +42,14 @@ class Rest::PropertyController < Rest::ServiceController
           error! :not_acceptable, :metadata => {:message => 'Device Mapping not found'}
         end
 
+        offset = params[:time_offset]
+
         deviceProperty = DeviceProperty.new
         deviceProperty.device_mapping = deviceMapping
         deviceProperty.property = propertySearch
         deviceProperty.value = params[:value]
-        deviceProperty.created_at = Date.strptime(params[:created_at], '%m/%d/%Y %I:%M %p')
-        deviceProperty.dismiss_time = Date.strptime(params[:dismiss_time], '%m/%d/%Y %I:%M %p')
+        deviceProperty.created_at = UserUtils::get_date_to_store_offset(DateTime.parse(params[:created_at]), offset)
+        deviceProperty.dismiss_time = UserUtils::get_date_to_store_offset(DateTime.parse(params[:dismiss_time]), offset)
         deviceProperty.save!
       end
 

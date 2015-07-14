@@ -51,6 +51,19 @@ AppBase.doRequest = function (url, formData, method, success, failure, dataType)
         }
     }
 
+    var now = new Date();
+    var timeOffset = now.getTimezoneOffset();
+
+    if (typeof formData == "string") {
+        if (formData != "") {
+            formData += "&";
+        }
+        formData += "time_offset=" + timeOffset;
+    }
+    else {
+        formData["time_offset"] = timeOffset;
+    }
+
     $.ajax(url, {
         data: formData,
         dataType: dataType,

@@ -131,7 +131,7 @@ class Rest::DeviceController < Rest::ServiceController
         deviceProperty.dismiss_duration = Time.at(property[:dismiss_duration].to_i) if !property[:dismiss_duration].nil? && !property[:dismiss_duration].empty?
         deviceProperty.dismiss_time = Time.at(property[:dismiss_time].to_i) if !property[:dismiss_time].nil? && !property[:dismiss_time].empty?
         deviceProperty.created_at = Time.at(property[:created_at].to_i).utc if !property[:created_at].nil? && !property[:created_at].empty?
-        deviceProperty.updated_at = Time.at(property[:created_at].to_i).utc if !property[:created_at].nil? && !property[:created_at].empty?
+        deviceProperty.updated_at = Time.at(property[:updated_at].to_i).utc if !property[:updated_at].nil? && !property[:updated_at].empty?
         deviceProperty.value = property[:value]
         deviceProperty.save!
       end
@@ -204,8 +204,9 @@ class Rest::DeviceController < Rest::ServiceController
 
     days = (end_date - start_date).to_i
 
-    start_date = start_date.beginning_of_day
-    end_date = end_date.end_of_day
+    offset = params[:time_offset]
+    start_date = UserUtils::get_begin_of_day_offset(start_date.beginning_of_day, offset)
+    end_date = UserUtils::get_end_of_day_offset(end_date.end_of_day, offset)
 
     propertiesAverage = DeviceProperty.joins(:property).joins(:device_mapping).where(device_mappings: {id: params[:device_id], site_id: getCurrentSite.id, customer_id: getCurrentCustomer.id, user_id: getCurrentUser.id}, property_id: params[:property_id]).select("lower(device_properties.value) value_name ", "count(device_properties.value) as count").group(:value_name).where(created_at: (start_date)..end_date)
 
@@ -276,17 +277,25 @@ class Rest::DeviceController < Rest::ServiceController
   end
 
   def chart_data(propertyValues, label = nil, isBarChart = false)
+
+    if !label.nil?
+      rgba = ChartProperties[label]
+      puts rgba
+    else
+      primaryColor = Random.rand(0...255).to_s
+      secondaryColor = Random.rand(0...255).to_s
+      tertiaryColor = Random.rand(0...255)
+      rgba = "#{primaryColor},#{secondaryColor},#{tertiaryColor}"
+    end
+
+    opacity = isBarChart ? 0.2 : 0
     propertyData = {}
-    primaryColor = Random.rand(0...255).to_s
-    secondaryColor = Random.rand(0...255).to_s
-    tertiaryColor = Random.rand(0...255).to_s
-    opacity = isBarChart ? 0.2 : 0;
-    propertyData["fillColor"] = "rgba(#{primaryColor},#{secondaryColor},#{tertiaryColor},#{opacity})"
-    propertyData["strokeColor"] = "rgba(#{primaryColor},#{secondaryColor},#{tertiaryColor},1)"
-    propertyData["pointColor"] = "rgba(#{primaryColor},#{secondaryColor},#{tertiaryColor},1)"
-    propertyData["pointStrokeColor"] = "rgba(#{primaryColor},#{secondaryColor},#{tertiaryColor},1)"
-    propertyData["highlightFill"] = "rgba(#{primaryColor},#{secondaryColor},#{tertiaryColor},1)"
-    propertyData["highlightStroke"] = "rgba(#{primaryColor},#{secondaryColor},#{tertiaryColor},0.5)"
+    propertyData["fillColor"] = "rgba(#{rgba}, #{opacity})"
+    propertyData["strokeColor"] = "rgba(#{rgba},1)"
+    propertyData["pointColor"] = "rgba(#{rgba},1)"
+    propertyData["pointStrokeColor"] = "rgba(#{rgba},1)"
+    propertyData["highlightFill"] = "rgba(#{rgba},1)"
+    propertyData["highlightStroke"] = "rgba(#{rgba},0.5)"
     propertyData["data"] = propertyValues
 
     if !label.nil?
