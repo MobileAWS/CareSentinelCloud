@@ -95,6 +95,7 @@ App.loadEntityView = function(data){
     entityGrid.dataTable({
         "processing": true,
         "serverSide": true,
+        "responsive": true,
         "searching": searchable,
         "search":"",
         "bFilter": searchable,

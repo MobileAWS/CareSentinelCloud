@@ -5,7 +5,7 @@ class UserUtils
     datetime = datetime.beginning_of_day
     datetime = datetime - (offset.to_i.minutes)
     return datetime
-    end
+  end
 
   def self.get_end_of_day_offset(datetime, offset)
     datetime = datetime.end_of_day
