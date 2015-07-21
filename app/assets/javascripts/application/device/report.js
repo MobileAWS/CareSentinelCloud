@@ -22,6 +22,8 @@ $(document).ready(function(){
         }
     });
 
+    $("#downloadLink").attr("disabled", true);
+
     AppBase.initializeData();
 });
 
@@ -125,4 +127,41 @@ function deviceNameSelected(deviceName, deviceId, entity){
 
 function posLoadProperty(deviceName){
     $('#deviceSelect').val(deviceName);
+}
+
+function deviceDownloadCheck(id){
+    checkDownloadslinks();
+    if($("#downloadlink_"+id).is(':checked')){
+        $("#download_ids").val(id+","+$("#download_ids").val());
+    }else{
+        $("#download_ids").val($("#download_ids").val().replace(id+',', ''));
+    }
+
+    if($("#download_ids").val()) {
+        $("#downloadLink").attr("disabled", false);
+    }else{
+        $("#downloadLink").attr("disabled", true);
+    }
+
+    updateDownloadLinkHref();
+}
+
+function updateDownloadLinkHref(){
+    if($("#downloadLink").attr('old_href')){
+        var href = $("#downloadLink").attr('old_href');
+    }else{
+        var href = $("#downloadLink").prop('href');
+        $("#downloadLink").attr('old_href', href);
+    }
+
+    $("#downloadLink").attr('href', href+'&device_ids='+$("#download_ids").val());
+}
+
+function checkDownloadslinks(){
+    var ids = $("#download_ids").val();
+    var arrayIds = ids.split(",");
+
+    arrayIds.forEach(function(entry) {
+        $("#downloadlink_"+entry).attr('checked', true);
+    });
 }

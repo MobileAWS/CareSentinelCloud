@@ -7,7 +7,6 @@
   <div role="contentFor" data-contentfor="headerTabs">
       <a href="#activemonitors" class="btn btn-primary" aria-controls="activemonitors" role="tab" data-toggle="tab">Active Monitors</a>
       <a href="#reporting" aria-controls="reporting" class="btn btn-primary" role="tab" data-toggle="tab">Reporting</a>
-      <a href="#download" aria-controls="download" class="btn btn-primary" role="tab" data-toggle="tab">Download</a>
   </div>
 
   <!-- Tab panes -->
@@ -16,6 +15,8 @@
       <div class="pageheader">
         <div role="contentFor" data-contentfor="headerTitle">Devices</div>
       </div>
+      <input type="hidden" id="download_ids">
+      <%= link_to "Download Devices Info",{ controller: "caregiver", action: "download_devices", token: params[:token], format: "csv"}, class: "btn btn-primary downloadlink", id: "downloadLink"  %>
       <% @entity_searchable = true; %>
       <%= render 'general/entity_grid' %>
     </div>
@@ -24,12 +25,6 @@
         <h1><i class="fa fa-home"></i>Reports</h1>
       </div>
       <br/><%= render 'caregiver/device/device_reports' %>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="download">
-      <div class="pageheader">
-        <h1><i class="fa fa-home"></i>Download</h1>
-      </div>
-      <%= link_to "Download Devices Info",{ controller: "caregiver", action: "download_devices", token: params[:token], format: "csv"}, class: "btn btn-primary" %>
     </div>
   </div>
 

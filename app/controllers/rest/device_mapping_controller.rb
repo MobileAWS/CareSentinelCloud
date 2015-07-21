@@ -3,7 +3,7 @@ class Rest::DeviceMappingController < Rest::ServiceController
   include AuthValidation
 
   def list
-    devicesSearch = DeviceMapping.joins(:device).where(site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id).select(:id, :device_name,"devices.hw_id", :site_id, :enable, :created_at)
+    devicesSearch = DeviceMapping.joins(:device).where(site_id: getCurrentSite.id, user_id: getCurrentUser.id, customer_id: getCurrentCustomer.id).select(:id, :device_name,"devices.hw_id", :site_id, :enable, :created_at, "false as report")
     if !params[:search].nil? && !devicesSearch.nil?
       value = params[:search][:value].nil? ? '' :  params[:search][:value]
       value = value.downcase

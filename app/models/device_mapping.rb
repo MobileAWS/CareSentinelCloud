@@ -8,13 +8,15 @@ class DeviceMapping < ActiveRecord::Base
   belongs_to :customer
 
 
-  @@gridColumns = {:id => "Id", :device_name => "Device Name", :hw_id => "Hardware ID", :created_at => "Create Date"}
+  @@gridColumns = {:id => "Id", :device_name => "Device Name", :hw_id => "Hardware ID", :created_at => "Create Date", :report => "Download"}
 
   @@colActions = {:device_name =>
-                      {:index => 1, :action => "deviceNameSelected('{data}', {id}, '{entity}');", :action_title => 'property', :html_template => '<a href="#" onclick="{action}">{data}</a>'}
+                      {:index => 1, :action => "deviceNameSelected('{data}', {id}, '{entity}');", :action_title => 'property', :html_template => '<a href="#" onclick="{action}">{data}</a>'},
+                  :report =>
+                      {:index => 4, :action => "deviceDownloadCheck({id});", :action_title => '', :html_template => "<input type='checkbox' name='download_id' id='downloadlink_{id}' onclick='{action}' {data}>" }
   }
 
-  @@gridRenderers = {:device_name => 'javaScriptRender', :enable => 'actionRender', :created_at => "dateRenderer"}
+  @@gridRenderers = {:device_name => 'javaScriptRender', :enable => 'actionRender', :created_at => "dateRenderer", :report => 'javaScriptRender'}
 
   @@columnOrder = {:created_at => "desc"}
 

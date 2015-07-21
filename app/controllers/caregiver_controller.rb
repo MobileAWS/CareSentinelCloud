@@ -10,7 +10,9 @@ class CaregiverController < ApplicationController
   end
 
   def download_devices
-    @properties = DeviceProperty.joins(:device_mapping).joins(:property).where("device_mappings.site_id= #{getCurrentSite.id}", "user_id= #{getCurrentUser.id}", "customer_id= #{getCurrentCustomer.id}")
+    device_ids = params[:device_ids].split(',')
+
+    @properties = DeviceProperty.joins(:device_mapping).joins(:property).where("device_mappings.site_id= #{getCurrentSite.id}", "user_id= #{getCurrentUser.id}", "customer_id= #{getCurrentCustomer.id}").where("device_mappings.id IN (?)", device_ids)
 
     headers['Content-Disposition'] = "attachment; filename=\"device-list#{Time.now.strftime("_%d_%m_%Y%H%M")}.csv\""
     headers['Content-Type'] ||= 'text/csv'

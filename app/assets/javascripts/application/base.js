@@ -250,7 +250,7 @@ AppBase.javaScriptRender = function (data, type, full, meta) {
 
     if (action && template) {
         action = action.replace('{data}', data).replace('{id}', full.id).replace('{entity}', entity);
-        var elementTemplate = template.replace('{action}', action).replace('{data}', data);
+        var elementTemplate = template.replace('{action}', action).replace('{data}', data).replace('{id}', full.id);
         return elementTemplate;
     }
 
@@ -318,6 +318,14 @@ AppBase.booleanRenderer = function (data) {
     }
 
     return "Yes";
+}
+
+AppBase.camelCaseRenderer = function(data){
+    if (data == null || data == "" || data.trim().toLowerCase() == "none") {
+        return "";
+    }
+
+    return AppBase.capitalize(data);
 }
 
 AppBase.capitalize = function (string) {

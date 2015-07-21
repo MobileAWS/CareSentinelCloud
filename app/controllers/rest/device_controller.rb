@@ -215,7 +215,7 @@ class Rest::DeviceController < Rest::ServiceController
     propertyValues = Array.new
 
     propertiesAverage.each do |p|
-      labels << p.value_name
+      labels << p.value_name.camelize
       propertyValues << (p.count.to_d/days).round(2)
     end
 
@@ -240,9 +240,7 @@ class Rest::DeviceController < Rest::ServiceController
     values = Hash.new
     datasets = Array.new
 
-    # Obtengo todos los labels
     propertiesDevice.each do |p|
-      # El label no existe se agrega
       if labels[p.day].nil?
         labels[p.day] = 0
         labelChart << p.day
@@ -282,10 +280,7 @@ class Rest::DeviceController < Rest::ServiceController
       rgba = ChartProperties[label]
       puts rgba
     else
-      primaryColor = Random.rand(0...255).to_s
-      secondaryColor = Random.rand(0...255).to_s
-      tertiaryColor = Random.rand(0...255)
-      rgba = "#{primaryColor},#{secondaryColor},#{tertiaryColor}"
+      rgba = "0,78,18"
     end
 
     opacity = isBarChart ? 0.2 : 0
@@ -299,7 +294,7 @@ class Rest::DeviceController < Rest::ServiceController
     propertyData["data"] = propertyValues
 
     if !label.nil?
-      propertyData["label"] = "#{label}"
+      propertyData["label"] = "#{label.camelize}"
     end
 
     return propertyData

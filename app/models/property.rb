@@ -6,7 +6,7 @@ class Property < ActiveRecord::Base
 
   @@gridColumns = {:id => "Id", :key => "Sensor", :value => "State", :device_name => "Device Name", :created_at => 'Alerted At', :dismiss_time => "Acknowledged At"}
 
-  @@gridRenderers = {:created_at => 'dateRenderer',:dismiss_time => 'dateRenderer'}
+  @@gridRenderers = {:created_at => 'dateRenderer',:dismiss_time => 'dateRenderer', :key => 'camelCaseRenderer', :value => 'camelCaseRenderer', :device_name => 'camelCaseRenderer'}
 
   @@columnOrder = {:created_at => "desc"}
 
