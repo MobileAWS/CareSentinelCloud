@@ -51,8 +51,7 @@ AppBase.doRequest = function (url, formData, method, success, failure, dataType)
         }
     }
 
-    var now = new Date();
-    var timeOffset = now.getTimezoneOffset();
+    var timeOffset = AppBase.getTimeZoneOffSet();
 
     if (typeof formData == "string") {
         if (formData != "") {
@@ -72,6 +71,11 @@ AppBase.doRequest = function (url, formData, method, success, failure, dataType)
         error: failure
     });
 };
+
+AppBase.getTimeZoneOffSet = function(){
+    var now = new Date();
+    return now.getTimezoneOffset();
+}
 
 AppBase.submitRestService = function (form, success, failure) {
     var method = form.attr("method");
@@ -150,6 +154,8 @@ AppBase.showInputDialog = function (url, options) {
 
 AppBase.initializeData = function () {
     $("[role='datetime-picker']").datetimepicker({format: 'YYYY-MM-DD'});
+
+    $("[role='datetime-picker-full']").datetimepicker({format: 'YYYY-MM-DD H:m A', sideBySide: true});
 
 
     $("[role='autocomplete']").each(function (index, element) {

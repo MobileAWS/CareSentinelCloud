@@ -154,7 +154,9 @@ function updateDownloadLinkHref(){
         $("#downloadLink").attr('old_href', href);
     }
 
-    $("#downloadLink").attr('href', href+'&device_ids='+$("#download_ids").val());
+    var timeOffset = AppBase.getTimeZoneOffSet();
+
+    $("#downloadLink").attr('href', href+'&device_ids='+$("#download_ids").val()+"&time_offset=" + timeOffset);
 }
 
 function checkDownloadslinks(){

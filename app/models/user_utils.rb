@@ -1,6 +1,11 @@
 
 class UserUtils
 
+  def self.get_day_to_show(datetime, offset)
+    datetime = datetime - (offset.to_i.minutes)
+    return datetime
+  end
+
   def self.get_begin_of_day_offset(datetime, offset)
     datetime = datetime.beginning_of_day
     datetime = datetime - (offset.to_i.minutes)
