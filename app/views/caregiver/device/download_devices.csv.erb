@@ -2,4 +2,4 @@
 <%= CSV.generate_line(headers, row_sep: "", col_sep: ",") %>
 <% @properties.each do |p| %>
 <%= CSV.generate_line([p.device_mapping.device.name, p.property.key.camelize, p.value.camelize, UserUtils::get_day_to_show(p.created_at, params[:time_offset]).strftime("%m/%d/%Y %H:%M"), UserUtils::get_day_to_show(p.dismiss_time, params[:time_offset]).strftime("%m/%d/%Y %H:%M")], row_sep: "", col_sep: ",").html_safe %>
-<% end %>
+<% end %> 
