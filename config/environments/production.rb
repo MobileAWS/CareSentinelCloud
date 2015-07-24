@@ -3,15 +3,15 @@ Rails.application.configure do
   config.emailAssetHost = 'http://caresentinel-maws.herokuapp.com'
 
   config.action_mailer.default_url_options = { :host => "caresentinel-maws-dev.herokuapp.com"}
-  config.action_mailer.default_options = {from: 'CareSentinel<caresentineldev@gmail.com>' }
+  config.action_mailer.default_options = {from: 'CareSentinel<maws.loon.test@gmail.com>' }
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       address:              'smtp.gmail.com',
       port:                 587,
       domain:               'gmail.com',
-      user_name:            'caresentineldev@gmail.com',
-      password:             'Polaris2014*',
+      user_name:            'maws.loon.test@gmail.com',
+      password:             'g30rg14$',
       authentication:       'plain',
       enable_starttls_auto: true
   }
