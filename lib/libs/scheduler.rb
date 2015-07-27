@@ -16,7 +16,14 @@ class Scheduler
   def self.schedule_site_purge(siteConfig)
     now = Time.new
     last_update = siteConfig.updated_at
-    days = (siteConfig.value.to_i - (now - last_update).to_i / (24 * 60 * 60)).to_s + 'd'
+    numberDays = siteConfig.value.to_i - (now - last_update).to_i / (24 * 60 * 60)
+    days = (numberDays).to_s + 'd'
+
+    if numberDays <= 0
+      self.purge(siteConfig)
+
+      days = siteConfig.value + 'd'
+    end
 
     job_id = SCHEDULER.every days do
       siteConfig = SiteConfig.find_by_job_id job_id
@@ -33,18 +40,13 @@ class Scheduler
   end
 
   def self.purge(siteConfig)
-    devices = DeviceProperty.all
     CSV.open("/purge_"+Time.new.strftime("%Y%m%d")+".csv", "wb") do |csv|
-      csv << ["Device Name", "Site Id", "Property Name", "Metric", "Value"]
-      devices.each do |d|
-        device =  d.device
-        date = Date.today - siteConfig.value.to_i
-        properties = device.properties.where("properties.created_at < '#{date}'").select(:id, :device_id, :property_id, :created_at, :updated_at, :key, :metric, :value)
-        properties.each do |p|
-          csv << [device.name, device.site_id, p.key, p.metric, p.value]
-          DeviceProperty.where(:property_id => p.id).destroy_all
-          p.delete
-        end
+      csv << ['Device', 'Sensor', 'Status', 'Alerted At', 'Acknowledged At']
+      date = Date.today - siteConfig.value.to_i
+      properties = DeviceProperty.joins(:device_mapping).joins(:property).where("properties.created_at < '#{date}'")
+      properties.each do |p|
+        csv << [p.device_mapping.device.name, p.property.key.camelize, p.value.camelize, p.created_at, p.dismiss_time]
+        p.delete
       end
     end
 
