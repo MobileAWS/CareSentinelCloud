@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150728003435) do
+ActiveRecord::Schema.define(version: 20150728223159) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,9 +22,10 @@ ActiveRecord::Schema.define(version: 20150728003435) do
   end
 
   create_table "customers", force: true do |t|
-    t.string   "customer_id", null: false
+    t.string   "customer_id",              null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "description", default: ""
   end
 
   create_table "device_mappings", force: true do |t|
@@ -101,9 +102,10 @@ ActiveRecord::Schema.define(version: 20150728003435) do
 
   create_table "sites", force: true do |t|
     t.string   "name"
-    t.boolean  "deleted",    default: false
+    t.boolean  "deleted",     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "description", default: ""
   end
 
   add_index "sites", ["name"], name: "index_sites_on_name", unique: true, using: :btree

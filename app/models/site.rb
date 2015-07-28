@@ -3,8 +3,12 @@ class Site < ActiveRecord::Base
 
   has_and_belongs_to_many :users, join_table: "site_users"
 
-  @@gridColumns = {:id => "Id", :name => "Name",:created_at => "Created At"}
+  attr_accessible :description
+
+  @@gridColumns = {:id => "Id", :name => "Name", :description => "Description", :created_at => "Created At"}
   @@gridRenderers = {:created_at => 'dateRenderer'}
+
+  @@columnOrder = {:created_at => "desc"}
 
   def self.gridColumns
     @@gridColumns
@@ -12,6 +16,10 @@ class Site < ActiveRecord::Base
 
   def self.gridRenderers
     @@gridRenderers
+  end
+
+  def self.columnOrder
+    @@columnOrder
   end
 
   def self.find_site_by_name(site_name)

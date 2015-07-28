@@ -16,12 +16,13 @@ class Rest::CustomerController < Rest::SecureController
   end
 
   def update
-    return if !checkRequiredParams(:customer_id, :customer_number);
+    return if !checkRequiredParams(:customer_id, :description);
     tmpCustomer = Customer.find(params[:customer_id]);
     if(tmpCustomer.nil?)
-      error! :not_acceptable, :metadata => {:message => 'Customer not found'}
+      expose :message=>'Customer not found', :error=>true
+      return
     end
-    tmpCustomer.customer_id = params[:customer_number]
+    tmpCustomer.description = params[:description]
     tmpCustomer.save!
     expose 'done'
   end

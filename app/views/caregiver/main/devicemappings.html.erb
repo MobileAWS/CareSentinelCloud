@@ -18,6 +18,7 @@
       <input type="hidden" id="download_ids">
       <%= link_to "Download Devices Info",{ controller: "caregiver", action: "download_devices", token: params[:token], format: "csv"}, class: "btn btn-primary downloadlink", id: "downloadLink"  %>
       <% @entity_searchable = true; %>
+      <% @availableActions = [:add, :edit, :delete] if @availableActions.nil? %>
       <%= render 'general/entity_grid' %>
     </div>
     <div role="tabpanel" class="tab-pane" id="reporting">

@@ -16,12 +16,15 @@ class Rest::SiteController < Rest::SecureController
   end
 
   def update
-    return if !checkRequiredParams(:site_id,:name);
+    return if !checkRequiredParams(:site_id,:description);
     tmpSite = Site.find(params[:site_id]);
+
     if(tmpSite.nil?)
-      error! :invalid_resource, :metadata => {:message => 'Site not found'}
+      expose :message=>'Site not found', :error=>true
+      return
     end
-    tmpSite.name = params[:name].upcase
+
+    tmpSite.description = params[:description]
     tmpSite.save!
     expose 'done'
   end

@@ -1,10 +1,12 @@
-<form class="entity-input-form" data-entity="<%= params[:entityName]%>" role="form">
-    <input type="hidden" name="skip_confirm" value="true" />
-    <% if !@targetEntity.id.nil? then %>
-            <input type="hidden" name="site_id" role="entity-id" required="true" value="<%= @targetEntity.id %>"/>
-    <% end %>
+<form class="entity-input-form" data-entity="<%= params[:entityName] %>" role="form">
+  <input type="hidden" name="skip_confirm" value="true"/>
+  <% if !@targetEntity.id.nil? then %>
+      <input type="hidden" name="site_id" role="entity-id" required="true" value="<%= @targetEntity.id %>"/>
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" name="name" disabled value="<%= @targetEntity.name %>"/>
+  <% end %>
   <div class="form-group">
-      <label for="email">Name</label>
-      <input type="text" class="form-control" id="name" name="name" required="true" value="<%= @targetEntity.name%>"/>
+    <label for="description">Description</label>
+    <input type="text" class="form-control" id="description" name="description" required="true" value="<%= @targetEntity.description %>">
   </div>
 </form>
