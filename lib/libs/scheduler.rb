@@ -17,8 +17,7 @@ class Scheduler
     now = Time.new
     last_update = siteConfig.updated_at
     numberDays = siteConfig.value.to_i - (now - last_update).to_i / (24 * 60 * 60)
-    days = '60s'
-    # days = (numberDays).to_s + 'd'
+    days = (numberDays).to_s + 'd'
 
     if numberDays <= 0
       self.purge(siteConfig)
@@ -45,8 +44,7 @@ class Scheduler
     CSV.open(csvName, "w") do |csv|
       csv << ['Device', 'Sensor', 'Status', 'Alerted At', 'Acknowledged At']
       date = Date.today - siteConfig.value.to_i
-      properties = DeviceProperty.joins(:device_mapping).joins(:property)
-      # properties = DeviceProperty.joins(:device_mapping).joins(:property).where("properties.created_at < '#{date}'")
+      properties = DeviceProperty.joins(:device_mapping).joins(:property).where("properties.created_at < '#{date}'")
       properties.each do |p|
         csv << [p.device_mapping.device.name, p.property.key.camelize, p.value.camelize, p.created_at, p.dismiss_time]
         # p.delete
@@ -54,10 +52,20 @@ class Scheduler
 
     end
 
-    MainMailer.send_csv(csvName).deliver
+    to_mail = self.get_to_mails
+    if !to_mail.nil? && !to_mail.value.empty?
+      to_mail.value.split(',').each do |to|
+        MainMailer.send_csv(csvName, to).deliver
+      end
+    end
 
     siteConfig.updated_at = Time.new
     siteConfig.save!
+  end
+
+  def self.get_to_mails
+    siteConfig = SiteConfig.find_by_name 'emails_purge'
+    return siteConfig
   end
 
 end

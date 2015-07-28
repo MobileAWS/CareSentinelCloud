@@ -110,6 +110,7 @@ Rails.application.routes.draw do
   resources :site_config do
     collection do
       post 'purge_days' => 'rest/site_config#purge_days'
+      post 'emails_purge' => 'rest/site_config#emails_purge'
     end
   end
 

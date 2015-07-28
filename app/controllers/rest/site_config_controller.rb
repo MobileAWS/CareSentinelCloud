@@ -25,7 +25,22 @@ class Rest::SiteConfigController < Rest::SecureController
      expose 'done'
    end
 
+   def emails_purge
+     return if !checkRequiredParams(:emails);
 
+     siteConfig = SiteConfig.find_by(name: 'emails_purge')
+
+     if siteConfig.nil?
+       siteConfig = SiteConfig.new
+       siteConfig.name = 'emails_purge'
+     end
+
+     siteConfig.value = params[:emails]
+     siteConfig.enabled = true
+     siteConfig.save!
+
+     expose 'done'
+   end
 
 
 

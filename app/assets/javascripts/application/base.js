@@ -345,3 +345,8 @@ AppBase.capitalize = function (string) {
 
     return fullStr;
 }
+
+AppBase.validateEmail = function(email) {
+    var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+    return emailReg.test( email );
+}
