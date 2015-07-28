@@ -125,13 +125,14 @@ class Rest::DeviceController < Rest::ServiceController
           propertySearch.save!
         end
 
+        DeviceProperty.record_timestamps = false
+
         deviceProperty = DeviceProperty.new
         deviceProperty.device_mapping = deviceMapping
         deviceProperty.property = propertySearch
-        deviceProperty.dismiss_duration = Time.at(property[:dismiss_duration].to_i) if !property[:dismiss_duration].nil? && !property[:dismiss_duration].empty?
-        deviceProperty.dismiss_time = Time.at(property[:dismiss_time].to_i) if !property[:dismiss_time].nil? && !property[:dismiss_time].empty?
-        deviceProperty.created_at = Time.at(property[:created_at].to_i).utc if !property[:created_at].nil? && !property[:created_at].empty?
-        deviceProperty.updated_at = Time.at(property[:updated_at].to_i).utc if !property[:updated_at].nil? && !property[:updated_at].empty?
+        deviceProperty.created_at = Time.at(property[:created_at].to_i).utc if !property[:created_at].nil? && (!property[:created_at].is_a?(String) || !property[:created_at].empty?)
+        deviceProperty.dismiss_time = Time.at(property[:dismiss_time].to_i).utc if !property[:dismiss_time].nil? && (!property[:dismiss_time].is_a?(String) || !property[:dismiss_time].empty?)
+        deviceProperty.updated_at = Time.at(property[:updated_at].to_i).utc if !property[:updated_at].nil? && (!property[:updated_at].is_a?(String) || !property[:updated_at].empty?)
         deviceProperty.value = property[:value]
         deviceProperty.save!
       end
