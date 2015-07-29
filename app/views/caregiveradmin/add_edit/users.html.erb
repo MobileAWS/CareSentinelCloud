@@ -5,7 +5,7 @@
     <% if !@targetEntity.id.nil? then %>
             <input type="hidden" name="user_id" id="user_id" role="entity-id" required="true" value="<%= @targetEntity.id %>"/>
     <% end %>
-   <input id="customersUser" type="hidden" name="customersUser" value="<%= @customer.id %>" required>
+   <input id="customersUser" type="hidden" name="customersUser" value="<%= @customer.customer_id %>" required>
    <input id="sitesUser" type="hidden" for="Site" name="sitesUser">
   <div class="form-group">
       <label for="email">Email</label>
