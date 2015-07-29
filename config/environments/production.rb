@@ -2,7 +2,7 @@ Rails.application.configure do
 
   config.emailAssetHost = 'http://caresentinel-maws.herokuapp.com'
 
-  config.action_mailer.default_url_options = { :host => "caresentinel-maws.herokuapp.com"}
+  config.action_mailer.default_url_options = { :host => "caresentinel-maws-dev.herokuapp.com"}
   config.action_mailer.default_options = {from: 'CareSentinel<maws.loon.test@gmail.com>' }
 
   config.action_mailer.delivery_method = :smtp
