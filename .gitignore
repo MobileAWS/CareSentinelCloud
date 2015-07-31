@@ -1,4 +1,3 @@
 .idea/
 /log/
 /tmp/
-config/environments/production.rb
