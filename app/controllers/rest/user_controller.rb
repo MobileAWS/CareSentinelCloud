@@ -93,9 +93,13 @@ class Rest::UserController < Rest::SecureController
       value = value.downcase
 
       if getCurrentUser.isAdmin?
-        usersSearch = User.not_deleted.joins(:role).where("lower(email) like '%#{value}%'").select(:id, :email, "roles.name as role_name");
+        usersSearch = User.not_deleted.joins(:role).where("lower(email) like '%#{value}%'").select(:id, :email, "roles.name as role_name",
+                      "(SELECT c.customer_id FROM customer_users cu, customers c where c.id = cu.customer_id and cu.user_id = users.id order by c.created_at desc limit 1) as customer_id",
+                      "(SELECT s.name FROM sites s, site_users su where s.id = su.site_id and su.user_id = users.id order by s.created_at desc limit 1) as site_name")
       else
-        usersSearch = User.not_deleted.joins(:role).joins(:customers).where(customer_users: {customer_id: getCurrentCustomer.id}).where("lower(email) like '%#{value}%' AND roles.role_id = 'caregiver'").select(:id, :email, "roles.name as role_name");
+        usersSearch = User.not_deleted.joins(:role).joins(:customers).where(customer_users: {customer_id: getCurrentCustomer.id}).where("lower(email) like '%#{value}%' AND roles.role_id = 'caregiver'").select(:id, :email, "roles.name as role_name",
+                     "(SELECT c.customer_id FROM customer_users cu, customers c where c.id = cu.customer_id and cu.user_id = users.id order by c.created_at desc limit 1) as customer_id",
+                     "(SELECT s.name FROM sites s, site_users su where s.id = su.site_id and su.user_id = users.id order by s.created_at desc limit 1) as site_name")
       end
 
     end
