@@ -5,4 +5,8 @@ class MainMailer < ActionMailer::Base
     mail(:to => to, :subject => "Clean Up Data")
   end
 
+  def welcome(to)
+    mail(:to => to, :subject => "Welcome To Loon Medical")
+  end
+
 end

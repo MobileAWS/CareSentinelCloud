@@ -7,6 +7,7 @@ class Rest::DeviceMappingController < Rest::ServiceController
     if !params[:search].nil? && !devicesSearch.nil?
       value = params[:search][:value].nil? ? '' :  params[:search][:value]
       value = value.downcase
+
       devicesSearch = devicesSearch.where("lower(device_name) like '%#{value}%'");
     end
 

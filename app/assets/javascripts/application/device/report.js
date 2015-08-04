@@ -121,7 +121,7 @@ function averageExportHref(deviceId){
 
 function deviceNameSelected(deviceName, deviceId, entity){
     $("[role='entityLink'][data-entity='"+entity+"']").data("filter", deviceId);
-    App.posLoadEntityView = "posLoadProperty('"+deviceName+"')";
+    App.posLoadEntityView = "posLoadProperty('"+AppBase.escapeWord(deviceName)+"')";
     $("[role='entityLink'][data-entity='"+entity+"']").click();
 }
 

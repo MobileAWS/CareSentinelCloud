@@ -255,7 +255,7 @@ AppBase.javaScriptRender = function (data, type, full, meta) {
     var entity = $("#colActionTitle" + col).val();
 
     if (action && template) {
-        action = action.replace('{data}', data).replace('{id}', full.id).replace('{entity}', entity);
+        action = action.replace('{data}', AppBase.escapeWord(data)).replace('{id}', full.id).replace('{entity}', entity);
         var elementTemplate = template.replace('{action}', action).replace('{data}', data).replace('{id}', full.id);
         return elementTemplate;
     }
@@ -349,4 +349,12 @@ AppBase.capitalize = function (string) {
 AppBase.validateEmail = function(email) {
     var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
     return emailReg.test( email );
+}
+
+AppBase.escapeWord = function(word) {
+    if (typeof word === 'string' || word instanceof String){
+        return word.replace("'", "\\'");
+    }else{
+        return word;
+    }
 }

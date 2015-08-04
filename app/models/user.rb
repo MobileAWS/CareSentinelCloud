@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   end
 
   def valid_site?(site_name)
-    return self.sites.where("upper(name) = '#{site_name.upcase}'").count > 0
+    return self.sites.where('upper(name) = :site_name',site_name: site_name.upcase).count > 0
   end
 
   def valid_customer_id(customer_id)
