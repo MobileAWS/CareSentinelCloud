@@ -1,6 +1,7 @@
 Rails.application.configure do
 
   config.emailAssetHost = 'http://localhost:3000'
+  config.welcomeSite = 'http://www.shopcaresentinel.com/'
 
   config.action_mailer.default_url_options = { :host => "localhost:3000"}
   config.action_mailer.default_options = {from: 'CareSentinel<maws.loon.test@gmail.com>' }
