@@ -55,6 +55,10 @@ class Rest::UserController < Rest::SecureController
         end
       end
 
+      if skipValidation
+        MainMailer.welcome(params[:email]).deliver
+      end
+
       newUser.skip_confirmation! if skipValidation
       newUser.save
 
