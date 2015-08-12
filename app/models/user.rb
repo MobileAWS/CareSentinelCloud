@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   has_many :customer_users
   has_many :customers, :through => :customer_users
 
-  @@gridColumns = {:id => "Id", :email => "Email", :role_name => "Role"}
+  @@gridColumns = {:id => "Id", :email => "Email", :role_name => "Role", :customer_id => "Last Customer ID", :site_name => "Last Site"}
   @@gridRenderers = {:email => 'emailRenderer'}
 
   def self.gridColumns

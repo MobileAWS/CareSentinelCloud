@@ -7,57 +7,59 @@ class Rest::UserController < Rest::SecureController
   def register (skipValidation = true)
     return if !checkRequiredParams(:email,:password,:confirm_password);
 
-    user = User.find_by_email params[:email]
+    ActiveRecord::Base.transaction do
+      user = User.find_by_email params[:email]
 
-    if !user.nil?
-      expose :message=>'User already exists, try login in', :error=>true
-      return
-    end
-
-    #The clients only can see the role id. "caregiver"
-    role = Role.find_by(role_id: params[:role_id])
-    if !role.nil? && role.role_id == Role::CAREGIVER_ADMIN_ROLE_ID && params[:customersUser].empty?
-      expose :message=>'Customer ID must be provided', :error=>true
-      return
-    end
-
-    if params[:password].length < 8
-      expose :message=>'Password must be at least 8 characters long', :error=>true
-      return
-    end
-
-    newUser = User.new
-    newUser.email = params[:email]
-    newUser.password = params[:password]
-    newUser.password_confirmation = params[:confirm_password]
-    newUser.role_id = role.id
-
-    if !params[:sitesUser].nil?
-      siteIds = params[:sitesUser].split(",")
-      siteIds.each do |id|
-        site = Site.find id
-        newUser.sites << site
+      if !user.nil?
+        expose :message=>'User already exists, try login in', :error=>true
+        return
       end
-    end
 
-    if !params[:customersUser].nil?
-      customersIDs = params[:customersUser].split(",")
-      customersIDs.each do |id|
-        customerSearch = Customer.find_by(customer_id: id)
-        if customerSearch.nil?
-          customerSearch = Customer.new
-          customerSearch.customer_id = id
-          customerSearch.save!
+      #The clients only can see the role id. "caregiver"
+      role = Role.find_by(role_id: params[:role_id])
+      if !role.nil? && role.role_id == Role::CAREGIVER_ADMIN_ROLE_ID && params[:customersUser].empty?
+        expose :message=>'Customer ID must be provided', :error=>true
+        return
+      end
+
+      if params[:password].length < 8
+        expose :message=>'Password must be at least 8 characters long', :error=>true
+        return
+      end
+
+      newUser = User.new
+      newUser.email = params[:email]
+      newUser.password = params[:password]
+      newUser.password_confirmation = params[:confirm_password]
+      newUser.role_id = role.id
+
+      if !params[:sitesUser].nil?
+        siteIds = params[:sitesUser].split(",")
+        siteIds.each do |id|
+          site = Site.find id
+          newUser.sites << site
         end
-
-        newUser.customers << customerSearch
       end
+
+      if !params[:customersUser].nil?
+        customersIDs = params[:customersUser].split(",")
+        customersIDs.each do |id|
+          customerSearch = Customer.find_by(customer_id: id)
+          if customerSearch.nil?
+            customerSearch = Customer.new
+            customerSearch.customer_id = id
+            customerSearch.save!
+          end
+
+          newUser.customers << customerSearch
+        end
+      end
+
+      newUser.skip_confirmation! if skipValidation
+      newUser.save
+
+      expose 'done'
     end
-
-    newUser.skip_confirmation! if skipValidation
-    newUser.save
-
-    expose 'done'
   end
 
   def create
@@ -93,9 +95,13 @@ class Rest::UserController < Rest::SecureController
       value = value.downcase
 
       if getCurrentUser.isAdmin?
-        usersSearch = User.not_deleted.joins(:role).where("lower(email) like '%#{value}%'").select(:id, :email, "roles.name as role_name");
+        usersSearch = User.not_deleted.joins(:role).where("lower(email) like '%#{value}%'").select(:id, :email, "roles.name as role_name",
+                      "(SELECT c.customer_id FROM customer_users cu, customers c where c.id = cu.customer_id and cu.user_id = users.id order by c.created_at desc limit 1) as customer_id",
+                      "(SELECT s.name FROM sites s, site_users su where s.id = su.site_id and su.user_id = users.id order by s.created_at desc limit 1) as site_name")
       else
-        usersSearch = User.not_deleted.joins(:role).joins(:customers).where(customer_users: {customer_id: getCurrentCustomer.id}).where("lower(email) like '%#{value}%' AND roles.role_id = 'caregiver'").select(:id, :email, "roles.name as role_name");
+        usersSearch = User.not_deleted.joins(:role).joins(:customers).where(customer_users: {customer_id: getCurrentCustomer.id}).where("lower(email) like '%#{value}%' AND roles.role_id = 'caregiver'").select(:id, :email, "roles.name as role_name",
+                     "(SELECT c.customer_id FROM customer_users cu, customers c where c.id = cu.customer_id and cu.user_id = users.id order by c.created_at desc limit 1) as customer_id",
+                     "(SELECT s.name FROM sites s, site_users su where s.id = su.site_id and su.user_id = users.id order by s.created_at desc limit 1) as site_name")
       end
 
     end
