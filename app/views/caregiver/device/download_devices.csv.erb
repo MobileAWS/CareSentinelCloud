@@ -1,8 +1,8 @@
 <% headers = ['Device', 'Sensor', 'Status', 'Alerted At', 'Acknowledged At'] %>
 <%= CSV.generate_line(headers, row_sep: "", col_sep: ",") %>
 <% @properties.each do |p|
-    created_at = UserUtils::get_day_to_show(p.created_at, params[:time_offset]).strftime("%m/%d/%Y %H:%M") if !p.created_at.nil?
-    dismiss_time = UserUtils::get_day_to_show(p.dismiss_time, params[:time_offset]).strftime("%m/%d/%Y %H:%M") if !p.dismiss_time.nil?
+    created_at = UserUtils::get_day_to_show(p.created_at, params[:time_offset]).strftime("%m/%d/%Y %I:%M %p") if !p.created_at.nil?
+    dismiss_time = UserUtils::get_day_to_show(p.dismiss_time, params[:time_offset]).strftime("%m/%d/%Y %I:%M %p") if !p.dismiss_time.nil?
 %>
 <%= CSV.generate_line([p.device_mapping.device.name, p.property.key.camelize, p.value.camelize, created_at, dismiss_time], row_sep: "", col_sep: ",").html_safe %>
 <% end %> 
