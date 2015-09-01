@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   get '/:userrole/view' => 'navigate#view'
   get '/:userrole/add_edit' => 'navigate#add_edit'
   get '/:userrole/details' => 'navigate#details'
+  get '/user/reset_password' => 'navigate#reset_password'
 
   get '/:userrole/download_caregivers' => 'caregiver#download_caregivers'
 

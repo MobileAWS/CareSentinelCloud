@@ -2,9 +2,9 @@ class NavigateController < ApplicationController
 
   include AuthValidation
 
-  AuthValidation.public_access :user => [:login]
+  AuthValidation.public_access :user => [:login, :reset_password]
 
-  before_action :check_token, :except => [:login]
+  before_action :check_token, :except => [:login, :reset_password]
 
   def check_token
     result = validate_token
@@ -18,11 +18,16 @@ class NavigateController < ApplicationController
   end
 
   def home
+    MainMailer.welcome('').deliver
      @site = getCurrentSite
      @role = getCurrentRole
      @customer = getCurrentCustomer
      @token = params[:token]
      render getRoleId+'/home'
+  end
+
+  def reset_password
+    render 'navigate/reset_password'
   end
 
   def view
