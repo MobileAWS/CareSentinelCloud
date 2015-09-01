@@ -18,7 +18,6 @@ class NavigateController < ApplicationController
   end
 
   def home
-    MainMailer.welcome('').deliver
      @site = getCurrentSite
      @role = getCurrentRole
      @customer = getCurrentCustomer

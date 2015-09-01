@@ -6,8 +6,7 @@ class MainMailer < ActionMailer::Base
   end
 
   def welcome(to)
-    @user_mail = 'jpgu07@gmail.com'
-    to = @user_mail
+    @user_mail = to
     mail(:to => to, :subject => "Welcome To Loon Medical")
   end
 
