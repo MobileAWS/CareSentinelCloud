@@ -27,6 +27,11 @@ class Rest::UserController < Rest::SecureController
         return
       end
 
+      if params[:password] != params[:confirm_password]
+        expose :message=>'Password and confirm password do not match!', :error=>true
+        return
+      end
+
       newUser = User.new
       newUser.email = params[:email]
       newUser.password = params[:password]
