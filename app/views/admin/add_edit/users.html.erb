@@ -31,29 +31,7 @@
   <div class="form-group">
     <div id="successAlert" class="alert alert-success" style="display: none;"><a href="#" class="close" onclick="$('#successAlert').hide();">&times;</a><div id="successAlertMsg"></div></div>
     <div id="errorAlert" class="alert alert-danger" style="display: none;"><a href="#" class="close" onclick="$('#errorAlert').hide();">&times;</a><div id="errorAlertMsg"></div></div>
-    <div class="col-sm-6 remove-padding-left">
-        <label>User Sites</label>
-        <div class="input-group">
-          <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/site/suggestions', :prefix_id => 'site', :placeholder => 'Site name' %>
-          <span class="input-group-btn">
-            <button class="btn btn-default" id="btnAddSite" type="button">Add Site</button>
-          </span>
-        </div>
-        <br/>
-        <table id="siteNameTable" style="min-width: 200px; text-align: center;" border="1" align="center">
-          <tr>
-            <th style="text-align: center;">Site Name</th>
-            <th style="text-align: center;">Action</th>
-          </tr>
-        <% @targetEntity.sites.each do |s|%>
-            <tr id="tr<%= s.id %>">
-             <td><%= s.name %></td>
-              <td style="text-align: center;"><a href="#" onclick="removeSite('<%= s.id %>');"><span aria-hidden="true">&times;</span></a></td>
-            </tr>
-        <% end %>
-        </table>
-    </div>
-    <div class="col-sm-6 remove-padding-right">
+    <div class="col-sm-6 remove-padding-left" id="userCustomersSection">
       <label>User Customer IDs</label>
       <div class="input-group">
         <input type="text" class="form-control" id="customer_number" name="customer_number"/>
@@ -71,6 +49,28 @@
             <tr id="tr<%= c.id %>">
               <td><%= c.customer_id %></td>
               <td style="text-align: center;"><a href="#" onclick="removeCustomer('<%= c.id %>');"><span aria-hidden="true">&times;</span></a></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+    <div class="col-sm-6 remove-padding-right"  id="userSitesSection">
+      <label>User Sites</label>
+      <div class="input-group">
+        <%= render "general/components/autocomplete", :targetValue => '', :targetLabel => '', :service => '/site/suggestions', :prefix_id => 'site', :placeholder => 'Site name' %>
+        <span class="input-group-btn">
+            <button class="btn btn-default" id="btnAddSite" type="button">Add Site</button>
+          </span>
+      </div>
+      <br/>
+      <table id="siteNameTable" style="min-width: 200px; text-align: center;" border="1" align="center">
+        <tr>
+          <th style="text-align: center;">Site Name</th>
+          <th style="text-align: center;">Action</th>
+        </tr>
+        <% @targetEntity.sites.each do |s|%>
+            <tr id="tr<%= s.id %>">
+              <td><%= s.name %></td>
+              <td style="text-align: center;"><a href="#" onclick="removeSite('<%= s.id %>');"><span aria-hidden="true">&times;</span></a></td>
             </tr>
         <% end %>
       </table>

@@ -39,14 +39,18 @@ class Rest::UserController < Rest::SecureController
       newUser.role_id = role.id
 
       if !params[:sitesUser].nil?
+        newUserSites = []
         siteIds = params[:sitesUser].split(",")
         siteIds.each do |id|
           site = Site.find id
-          newUser.sites << site
+          newUserSites << site
         end
+        newUser.sites = newUserSites
+        newUser.initialSite = newUserSites.first if newUserSites && newUserSites.count > 0
       end
 
       if !params[:customersUser].nil?
+        newUserCustomers = []
         customersIDs = params[:customersUser].split(",")
         customersIDs.each do |id|
           customerSearch = Customer.find_by(customer_id: id)
@@ -56,14 +60,18 @@ class Rest::UserController < Rest::SecureController
             customerSearch.save!
           end
 
-          newUser.customers << customerSearch
+          newUserCustomers << customerSearch
+
         end
+        newUser.customers = newUserCustomers
+        newUser.initialCustomer = newUserCustomers.first if (newUserCustomers && newUserCustomers.count > 0)
       end
 
       if skipValidation
         MainMailer.welcome(params[:email]).deliver
       end
 
+      newUser.initialPassword = params[:password]
       newUser.skip_confirmation! if skipValidation
       newUser.save
 

@@ -2,6 +2,10 @@ var siteId = null;
 var customerId = null;
 
 $(document).ready(function(){
+
+    checkRolesSelector();
+    $("#rolesSelector").change(checkRolesSelector);
+
     $("#btnAddCustomer").click(function(){
         if($("#customer_number").val()){
             //Is add or edit
@@ -13,7 +17,7 @@ $(document).ready(function(){
                 AppBase.doRequest("/user/addCustomerId", data, 'post', onCustomerAdded, null, 'json');
             }else{
                 var data = new Object();
-                if(!$("#customersUser").val().includes($("#customer_number").val()+",")){
+                if($("#customersUser").val().indexOf($("#customer_number").val()+",") < 0){
                     data.response = 'done';
                     $("#customersUser").val($("#customersUser").val()+($("#customersUser").val() != '' ? ',' : '')+$("#customer_number").val());
                 }else{
@@ -34,7 +38,7 @@ $(document).ready(function(){
                 AppBase.doRequest("/user/addSiteUser", data, 'post', onSiteAdded, null, 'json');
             }else{
                 var data = new Object();
-                if(!$("#sitesUser").val().includes($("#site_id").val()+",")){
+                if($("#sitesUser").val().indexOf($("#site_id").val()+",") < 0){
                     data.response = 'done';
                     $("#sitesUser").val($("#sitesUser").val()+($("#sitesUser").val() != '' ? ',' : '')+$("#site_id").val());
                 }else{
@@ -48,6 +52,24 @@ $(document).ready(function(){
         }
     });
 });
+
+function checkRolesSelector(){
+    var valueChanged = $("#rolesSelector option:selected");
+    if(valueChanged.val() != "caregiver") {
+        $("#userSitesSection").hide();
+    }
+    else{
+        $("#userSitesSection").show();
+    }
+
+    if(valueChanged.val() == "admin") {
+        $("#userCustomersSection").hide();
+    }
+    else{
+        $("#userCustomersSection").show();
+    }
+
+}
 
 function removeSite(site_id){
     siteId = site_id;

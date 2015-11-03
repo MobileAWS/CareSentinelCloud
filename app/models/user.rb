@@ -12,6 +12,13 @@ class User < ActiveRecord::Base
   has_many :customer_users
   has_many :customers, :through => :customer_users
 
+  # Data for the initialization, this is required to send the initial email, and should not be used on any other case.
+  @initialPassword = nil
+  @initialCustomer = nil
+  @initialSite = nil
+
+  attr_accessor :initialPassword, :initialCustomer, :initialSite
+
   @@gridColumns = {:id => "Id", :email => "Email", :role_name => "Role", :customer_id => "Last Customer ID", :site_name => "Last Site"}
   @@gridRenderers = {:email => 'emailRenderer'}
 
