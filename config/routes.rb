@@ -27,7 +27,7 @@ Rails.application.routes.draw do
 
   get '/:userrole/download_caregivers' => 'caregiver#download_caregivers'
 
-
+  post 'send_sms' => 'rest/sms#send_sms'
 
   resources :user do
     collection do
