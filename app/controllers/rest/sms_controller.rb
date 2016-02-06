@@ -10,7 +10,7 @@ class Rest::SmsController < Rest::SecureController
 
       message = params[:message]
       phones= params[:phone_numbers] if params[:phone_numbers].present?
-      Rails.logger.info 'Make it so Sending SMS to '+phones.to_s+' with message '+message
+      puts 'Make it so Sending SMS to '+phones.to_s+' with message '+message
 
       if params[:latitude].present? && params[:longitude].present?
         short_link = Bitly.client.shorten("https://maps.google.com/?q=#{params[:latitude]}+#{params[:longitude]}&ll=#{params[:latitude]}+#{params[:longitude]}&output=classic")
