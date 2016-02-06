@@ -11,7 +11,7 @@ development:
     database: loonmedical_dev
     pool: 5
     username: postgres
-    password: Polaris2014*
+    password: pwd
 
 test:
     adapter: postgresql
@@ -19,7 +19,7 @@ test:
     database: loonmedical_test
     pool: 5
     username: postgres
-    password: Polaris2014*
+    password: pwd
 
 production:
       host: localhost

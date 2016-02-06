@@ -1,18 +1,25 @@
 class Rest::SmsController < Rest::SecureController
 
+  AuthValidation.token_action :sms => [:send_sms]
+
   require 'rubygems'
   require 'twilio-ruby'
 
   def send_sms
     return if !checkRequiredParams(:message,:phone_numbers);
 
-      message= params[:message] if params[:message].present?
+      message = params[:message]
       phones= params[:phone_numbers] if params[:phone_numbers].present?
       Rails.logger.info 'Make it so Sending SMS to '+phones.to_s+' with message '+message
 
+      if params[:latitude].present? && params[:longitude].present?
+        short_link = Bitly.client.shorten("https://maps.google.com/?q=#{params[:latitude]}+#{params[:longitude]}&ll=#{params[:latitude]}+#{params[:longitude]}&output=classic")
+        message = "#{message}, alert occurred at #{short_link.short_url}"
+      end
       if phones.kind_of?(Array)
           phones.each do |phone|
              phone_number = phone
+             phone_number = "+#{phone_number}" unless phone_number.start_with?'+'
              send_message(phone_number, message)
           end
       else

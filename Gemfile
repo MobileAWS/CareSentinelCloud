@@ -59,3 +59,5 @@ gem 'sprockets-rails','2.1.3'
 gem 'rufus-scheduler'
 
 gem 'twilio-ruby'
+
+gem 'bitly'
