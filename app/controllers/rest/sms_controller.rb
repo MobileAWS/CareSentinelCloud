@@ -19,7 +19,7 @@ class Rest::SmsController < Rest::SecureController
       if phones.kind_of?(Array)
           phones.each do |phone|
              phone_number = phone
-             phone_number = "+#{phone_number}" unless phone_number.start_with?'+'
+             phone_number = "+1#{phone_number}" unless phone_number.start_with?'+'
              send_message(phone_number, message)
           end
       else
